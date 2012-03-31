@@ -18,7 +18,7 @@
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         checkbox = _ref[_i];
-        _results.push(checkbox.visit(func));
+        _results.push(checkbox.visit(func, 0));
       }
       return _results;
     };
@@ -35,15 +35,16 @@
       this.children = children != null ? children : null;
     }
 
-    Checkbox.prototype.visit = function(func) {
+    Checkbox.prototype.visit = function(func, level) {
       var child, _i, _len, _ref, _results;
-      func(this);
+      if (level == null) level = 0;
+      func(this, level);
       if (this.children !== null) {
         _ref = this.children;
         _results = [];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           child = _ref[_i];
-          _results.push(child.visit(func));
+          _results.push(child.visit(func, level + 1));
         }
         return _results;
       }
