@@ -12,8 +12,8 @@ addCheckboxes = () ->
 	
 	ingredients.visit(func)
 
-append = (container, value) ->
-	html = "<input type='checkbox' id='#{value.name}' name=Zutat value='#{value.name}' #{checked_string(value.checked)}>#{value.name}</><br>"
+append = (container, checkbox) ->
+	html = "<input type='checkbox' id='#{checkbox.name}' name=Zutat value='#{checkbox.name}' #{checked_string(checkbox.checked)}>#{checkbox.name}</><br>"
 	container.append($(html));
 	
 checked_string = (checked) ->

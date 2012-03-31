@@ -15,9 +15,9 @@
     return ingredients.visit(func);
   };
 
-  append = function(container, value) {
+  append = function(container, checkbox) {
     var html;
-    html = "<input type='checkbox' id='" + value.name + "' name=Zutat value='" + value.name + "' " + (checked_string(value.checked)) + ">" + value.name + "</><br>";
+    html = "<input type='checkbox' id='" + checkbox.name + "' name=Zutat value='" + checkbox.name + "' " + (checked_string(checkbox.checked)) + ">" + checkbox.name + "</><br>";
     return container.append($(html));
   };
 

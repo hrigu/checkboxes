@@ -9,7 +9,12 @@
     }
 
     Ingredients.prototype.init = function() {
-      return this.checkboxes = [new cb.Checkbox("Kapern", true), new cb.Checkbox("Oliven", false), new cb.Checkbox("Salami", false, [new cb.Checkbox("Scharf", true)]), new cb.Checkbox("Pilze", false), new cb.Checkbox("Sardellen", true)];
+      return this.checkboxes = [this._create("Kapern", true), this._create("Oliven", false), this._create("Salami", false, [this._create("Scharf", true)]), this._create("Pilze", false), this._create("Sardellen", true)];
+    };
+
+    Ingredients.prototype._create = function(name, checked, children) {
+      console.log(name);
+      return new cb.Checkbox(name, checked, children);
     };
 
     Ingredients.prototype.visit = function(func) {
@@ -18,7 +23,7 @@
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         checkbox = _ref[_i];
-        _results.push(checkbox.visit(func, 0));
+        _results.push(checkbox.visit(func));
       }
       return _results;
     };
@@ -28,23 +33,33 @@
   })();
 
   cb.Checkbox = (function() {
+    var parent;
+
+    parent = null;
 
     function Checkbox(name, checked, children) {
+      var child, _i, _len, _ref;
       this.name = name;
       this.checked = checked;
       this.children = children != null ? children : null;
+      if (this.children !== null) {
+        _ref = this.children;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          child = _ref[_i];
+          child.parent = this;
+        }
+      }
     }
 
-    Checkbox.prototype.visit = function(func, level) {
+    Checkbox.prototype.visit = function(func) {
       var child, _i, _len, _ref, _results;
-      if (level == null) level = 0;
-      func(this, level);
+      func(this);
       if (this.children !== null) {
         _ref = this.children;
         _results = [];
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           child = _ref[_i];
-          _results.push(child.visit(func, level + 1));
+          _results.push(child.visit(func));
         }
         return _results;
       }

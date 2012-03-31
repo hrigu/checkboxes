@@ -3,9 +3,8 @@ describe "Ingredients", ->
 	beforeEach ->
 		ingredients = new cb.Ingredients()
 
-	describe "has checkboxes", ->
-		it "has some elements", ->
-			expect(ingredients.checkboxes.length).toBe 5
+	it "has 5 parent checkboxes", ->
+		expect(ingredients.checkboxes.length).toBe 5
 			
 	it "can visit the elements", ->
 		i = 0
@@ -14,12 +13,13 @@ describe "Ingredients", ->
 		expect(i).toBe 6
 		
 describe "Checkbox", ->
-	it "can be visited", ->
-		checkbox = new cb.Checkbox("first", true)
-		name = "?"
-		func = (cb) -> name = cb.name
-		checkbox.visit(func)
-		expect(name).toBe "first"
+	describe "can be visited", ->
+		it "returns the itself to the caller", ->
+			checkbox = new cb.Checkbox("first", true)
+			name = "?"
+			func = (cb) -> name = cb.name
+			checkbox.visit(func)
+			expect(name).toBe "first"
 		
 	it "can have children", ->
 		child1 = new cb.Checkbox("child1", true)
@@ -33,5 +33,11 @@ describe "Checkbox", ->
 		parent.visit(-> i++)
 		expect(i).toBe 3
 		
+	describe "A child checkbox", ->
+		it "has a parent checkbox", ->
+			child1 = new cb.Checkbox("child1", true)	
+			parent = new cb.Checkbox("parent", true, [child1])
+			expect(child1.parent.name).toBe "parent"	
+			
 		
 			

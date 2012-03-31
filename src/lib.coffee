@@ -6,27 +6,30 @@ class cb.Ingredients
 		this.init()
 	init: () ->
 		@checkboxes = [
-			new cb.Checkbox("Kapern", true)
+			this._create("Kapern", true)
 		,
-			new cb.Checkbox("Oliven", false)
+			this._create("Oliven", false)
 		,
-			new cb.Checkbox("Salami", false, [
-				new cb.Checkbox("Scharf", true)
-			]
-			)
+			this._create("Salami", false, [this._create("Scharf", true)])
 		,
-			new cb.Checkbox("Pilze", false)
+			this._create("Pilze", false)
 		,
-			new cb.Checkbox("Sardellen", true)
+			this._create("Sardellen", true)
 		]
-		
+	_create: (name, checked, children) ->
+		console.log name
+		new cb.Checkbox(name, checked, children)
+			
 	visit: (func) ->
-		checkbox.visit(func, 0) for checkbox in @checkboxes
+		checkbox.visit(func) for checkbox in @checkboxes
 
 class cb.Checkbox
+	parent = null
 	constructor: (@name, @checked, @children = null) ->
+		if (@children != null)
+			child.parent = this for child in @children
 		
-	visit: (func, level = 0) ->
-		func(this, level)
+	visit: (func) ->
+		func(this)
 		if @children != null
-			child.visit(func, level + 1) for child in @children
+			child.visit(func) for child in @children
