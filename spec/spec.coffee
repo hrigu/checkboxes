@@ -34,10 +34,17 @@ describe "Checkbox", ->
 		expect(i).toBe 3
 		
 	describe "A child checkbox", ->
+		child = null
+		beforeEach ->
+			child = new cb.Checkbox("child", true)	
+			parent = new cb.Checkbox("parent", true, [child])
+			
 		it "has a parent checkbox", ->
-			child1 = new cb.Checkbox("child1", true)	
-			parent = new cb.Checkbox("parent", true, [child1])
-			expect(child1.parent.name).toBe "parent"	
+			expect(child.parent.name).toBe "parent"
+		it "has a level of 1", ->
+			expect(child.level()).toBe 1
+			
+				
 			
 		
 			
