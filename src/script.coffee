@@ -1,11 +1,16 @@
 
 
 jQuery ->
-	addCheckboxes(new this.cb.Selection().selection)
+	addCheckboxes()
 
-addCheckboxes = (selection) ->
+addCheckboxes = () ->
 	container = $('#chooser');
-	append container, value for value in selection
+	ingredients = new this.cb.Ingredients
+	
+	func = (checkbox) ->
+		append(container, checkbox)
+	
+	ingredients.visit(func)
 
 append = (container, value) ->
 	html = "<input type='checkbox' id='#{value.name}' name=Zutat value='#{value.name}' #{checked_string(value.checked)}>#{value.name}</><br>"

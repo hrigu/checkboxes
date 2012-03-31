@@ -2,18 +2,17 @@
   var addCheckboxes, append, checked_string;
 
   jQuery(function() {
-    return addCheckboxes(new this.cb.Selection().selection);
+    return addCheckboxes();
   });
 
-  addCheckboxes = function(selection) {
-    var container, value, _i, _len, _results;
+  addCheckboxes = function() {
+    var container, func, ingredients;
     container = $('#chooser');
-    _results = [];
-    for (_i = 0, _len = selection.length; _i < _len; _i++) {
-      value = selection[_i];
-      _results.push(append(container, value));
-    }
-    return _results;
+    ingredients = new this.cb.Ingredients;
+    func = function(checkbox) {
+      return append(container, checkbox);
+    };
+    return ingredients.visit(func);
   };
 
   append = function(container, value) {

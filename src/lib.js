@@ -4,9 +4,13 @@
 
   cb.Ingredients = (function() {
 
-    function Ingredients() {}
+    function Ingredients() {
+      this.init();
+    }
 
-    Ingredients.prototype.checkboxes = [new cb.Checkbox("Kapern", true), new cb.Checkbox("Oliven", false), new cb.Checkbox("Salami", false), new cb.Checkbox("Pilze", false), new cb.Checkbox("Sardellen", true)];
+    Ingredients.prototype.init = function() {
+      return this.checkboxes = [new cb.Checkbox("Kapern", true), new cb.Checkbox("Oliven", false), new cb.Checkbox("Salami", false, [new cb.Checkbox("Scharf", true)]), new cb.Checkbox("Pilze", false), new cb.Checkbox("Sardellen", true)];
+    };
 
     Ingredients.prototype.visit = function(func) {
       var checkbox, _i, _len, _ref, _results;
@@ -28,11 +32,21 @@
     function Checkbox(name, checked, children) {
       this.name = name;
       this.checked = checked;
-      this.children = children;
+      this.children = children != null ? children : null;
     }
 
     Checkbox.prototype.visit = function(func) {
-      return func(this);
+      var child, _i, _len, _ref, _results;
+      func(this);
+      if (this.children !== null) {
+        _ref = this.children;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          child = _ref[_i];
+          _results.push(child.visit(func));
+        }
+        return _results;
+      }
     };
 
     return Checkbox;
