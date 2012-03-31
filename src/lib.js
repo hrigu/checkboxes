@@ -33,9 +33,8 @@
   })();
 
   cb.Checkbox = (function() {
-    var parent;
 
-    parent = null;
+    Checkbox.prototype.parent = null;
 
     function Checkbox(name, checked, children) {
       var child, _i, _len, _ref;
@@ -50,6 +49,15 @@
         }
       }
     }
+
+    Checkbox.prototype.level = function(size) {
+      if (size == null) size = 0;
+      if (this.parent !== null) {
+        return this.parent.level(size + 1);
+      } else {
+        return size;
+      }
+    };
 
     Checkbox.prototype.visit = function(func) {
       var child, _i, _len, _ref, _results;

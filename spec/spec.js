@@ -46,11 +46,18 @@
       return expect(i).toBe(3);
     });
     return describe("A child checkbox", function() {
-      return it("has a parent checkbox", function() {
-        var child1, parent;
-        child1 = new cb.Checkbox("child1", true);
-        parent = new cb.Checkbox("parent", true, [child1]);
-        return expect(child1.parent.name).toBe("parent");
+      var child;
+      child = null;
+      beforeEach(function() {
+        var parent;
+        child = new cb.Checkbox("child", true);
+        return parent = new cb.Checkbox("parent", true, [child]);
+      });
+      it("has a parent checkbox", function() {
+        return expect(child.parent.name).toBe("parent");
+      });
+      return it("has a level of 1", function() {
+        return expect(child.level()).toBe(1);
       });
     });
   });

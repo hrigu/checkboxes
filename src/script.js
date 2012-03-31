@@ -1,5 +1,5 @@
 (function() {
-  var addCheckboxes, append, checked_string;
+  var addCheckboxes, append, checked_string, indent;
 
   jQuery(function() {
     return addCheckboxes();
@@ -17,8 +17,16 @@
 
   append = function(container, checkbox) {
     var html;
-    html = "<input type='checkbox' id='" + checkbox.name + "' name=Zutat value='" + checkbox.name + "' " + (checked_string(checkbox.checked)) + ">" + checkbox.name + "</><br>";
+    html = "<li>" + (indent(checkbox)) + "<input type='checkbox' id='" + checkbox.name + "' name=Zutat value='" + checkbox.name + "' " + (checked_string(checkbox.checked)) + ">" + checkbox.name + "</></li>";
     return container.append($(html));
+  };
+
+  indent = function(checkbox) {
+    if (checkbox.level() === 0) {
+      return "";
+    } else {
+      return "&nbsp;&nbsp;";
+    }
   };
 
   checked_string = function(checked) {

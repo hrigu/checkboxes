@@ -24,11 +24,13 @@ class cb.Ingredients
 		checkbox.visit(func) for checkbox in @checkboxes
 
 class cb.Checkbox
-	parent = null
+	parent: null
 	constructor: (@name, @checked, @children = null) ->
 		if (@children != null)
 			child.parent = this for child in @children
-		
+			
+	level: (size = 0) ->
+		if @parent != null then @parent.level(size+1) else size	
 	visit: (func) ->
 		func(this)
 		if @children != null
