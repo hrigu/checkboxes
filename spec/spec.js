@@ -9,14 +9,29 @@
     it("has 5 parent checkboxes", function() {
       return expect(ingredients.checkboxes.length).toBe(5);
     });
-    return it("can visit the elements", function() {
+    it("can visit the elements", function() {
       var func, i;
       i = 0;
       func = function() {
         return i++;
       };
       ingredients.visit(func);
-      return expect(i).toBe(6);
+      return expect(i).toBe(7);
+    });
+    it("can find an element", function() {
+      var found;
+      found = ingredients.find("Oliven");
+      return expect(found.name).toBe("Oliven");
+    });
+    return describe("update", function() {
+      return it("can update", function() {
+        var element;
+        ingredients.update("Kapern", true);
+        element = ingredients.find("Kapern");
+        expect(element.checked).toBe(true);
+        expect(element.children[0].checked).toBe(true);
+        return expect(ingredients.find(element.friends[0]).checked).toBe(true);
+      });
     });
   });
 
@@ -44,6 +59,13 @@
         return i++;
       });
       return expect(i).toBe(3);
+    });
+    it("can have friends", function() {
+      var checkbox, friend;
+      friend = new cb.Checkbox("friend", true);
+      checkbox = new cb.Checkbox("cb", true);
+      checkbox.setFriends(["friend"]);
+      return expect(friend.name).toBe("friend");
     });
     return describe("A child checkbox", function() {
       var child;

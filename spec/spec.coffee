@@ -10,7 +10,18 @@ describe "Ingredients", ->
 		i = 0
 		func = () -> i++
 		ingredients.visit(func)
-		expect(i).toBe 6
+		expect(i).toBe 7
+	it "can find an element", ->
+		found = ingredients.find "Oliven"
+		expect(found.name).toBe "Oliven"
+	describe "update", ->
+		it "can update", ->
+			ingredients.update("Kapern", true)
+			element = ingredients.find("Kapern")
+			expect(element.checked).toBe true
+			expect(element.children[0].checked).toBe true
+			expect(ingredients.find(element.friends[0]).checked).toBe true
+			
 		
 describe "Checkbox", ->
 	describe "can be visited", ->
@@ -33,6 +44,13 @@ describe "Checkbox", ->
 		parent.visit(-> i++)
 		expect(i).toBe 3
 		
+	it "can have friends", ->
+		friend = new cb.Checkbox("friend", true)
+		checkbox =  new cb.Checkbox("cb", true)
+		checkbox.setFriends(["friend"])
+		expect(friend.name).toBe("friend")
+		
+		
 	describe "A child checkbox", ->
 		child = null
 		beforeEach ->
@@ -43,6 +61,7 @@ describe "Checkbox", ->
 			expect(child.parent.name).toBe "parent"
 		it "has a level of 1", ->
 			expect(child.level()).toBe 1
+		
 			
 				
 			

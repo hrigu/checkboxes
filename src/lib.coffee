@@ -6,7 +6,7 @@ class cb.Ingredients
 		this.init()
 	init: () ->
 		@checkboxes = [
-			this._create("Kapern", true)
+			this._create("Kapern", false, [this._create("Gross", false)]).setFriends(["Oliven", "Pilze"])
 		,
 			this._create("Oliven", false)
 		,
@@ -16,22 +16,36 @@ class cb.Ingredients
 		,
 			this._create("Sardellen", true)
 		]
+		
 	_create: (name, checked, children) ->
-		console.log name
 		new cb.Checkbox(name, checked, children)
+		
+	update: (name, checked) ->
+		element = this.find(name)
+		element.checked = checked
+		child.checked = checked for child in element.children
+		for friendName in element.friends
+			this.find(friendName).checked = checked		
 			
 	visit: (func) ->
 		checkbox.visit(func) for checkbox in @checkboxes
+	
+	find: (name) ->
+		found = null
+		this.visit (checkbox) ->
+			if checkbox.name is name
+				found = checkbox
+		found
 
 class cb.Checkbox
 	parent: null
-	constructor: (@name, @checked, @children = null) ->
+	friends: []
+	constructor: (@name, @checked, @children = []) ->
 		if (@children != null)
 			child.parent = this for child in @children
-			
+	setFriends: (@friends) -> this		
 	level: (size = 0) ->
 		if @parent != null then @parent.level(size+1) else size	
 	visit: (func) ->
 		func(this)
-		if @children != null
-			child.visit(func) for child in @children
+		child.visit(func) for child in @children

@@ -1,14 +1,19 @@
 (function() {
-  var addCheckboxes, append, checked_string, indent;
+  var addCheckboxes, append, checked_string, indent, updateUI;
 
   jQuery(function() {
-    return addCheckboxes();
+    var ingredients;
+    ingredients = new cb.Ingredients();
+    addCheckboxes(ingredients);
+    return $(".mycheckbox").click(function() {
+      ingredients.update(this.id, this.checked);
+      return updateUI(ingredients);
+    });
   });
 
-  addCheckboxes = function() {
-    var container, func, ingredients;
+  addCheckboxes = function(ingredients) {
+    var container, func;
     container = $('#chooser');
-    ingredients = new this.cb.Ingredients;
     func = function(checkbox) {
       return append(container, checkbox);
     };
@@ -17,7 +22,7 @@
 
   append = function(container, checkbox) {
     var html;
-    html = "<li>" + (indent(checkbox)) + "<input type='checkbox' id='" + checkbox.name + "' name=Zutat value='" + checkbox.name + "' " + (checked_string(checkbox.checked)) + ">" + checkbox.name + "</></li>";
+    html = "<li>" + (indent(checkbox)) + "<input type='checkbox' class='mycheckbox' id='" + checkbox.name + "' name=Zutat value='" + checkbox.name + "' " + (checked_string(checkbox.checked)) + ">" + checkbox.name + "</></li>";
     return container.append($(html));
   };
 
@@ -35,6 +40,14 @@
     } else {
       return "";
     }
+  };
+
+  updateUI = function(ingredients) {
+    return ingredients.visit(function(checkbox) {
+      var jQueryElement;
+      jQueryElement = $("#" + checkbox.name);
+      return jQueryElement[0].checked = checkbox.checked;
+    });
   };
 
 }).call(this);
