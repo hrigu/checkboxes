@@ -28,7 +28,7 @@ describe "Checkbox", ->
 		it "returns the itself to the caller", ->
 			checkbox = new cb.Checkbox("first", true)
 			name = "?"
-			func = (cb) -> name = cb.name
+			func = -> name = this.name
 			checkbox.visit(func)
 			expect(name).toBe "first"
 		

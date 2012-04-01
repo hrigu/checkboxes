@@ -1,5 +1,3 @@
-
-
 jQuery ->
 	ingredients = new cb.Ingredients()
 	addCheckboxes(ingredients)	
@@ -11,8 +9,8 @@ addCheckboxes = (ingredients) ->
 	
 	#create the checkboxes
 	container = $('#chooser')
-	func = (checkbox) ->
-		append(container, checkbox)
+	func = ->
+		append(container, this)
 	ingredients.visit(func)
 
 append = (container, checkbox) ->
@@ -25,7 +23,8 @@ checked_string = (checked) ->
 	if checked then "checked='checked'" else ""
 	
 updateUI = (ingredients) ->
-	ingredients.visit (checkbox)->
-		jQueryElement = $("##{checkbox.name}")
-		jQueryElement[0].checked = checkbox.checked			
+	ingredients.visit ->
+		uiCheckbox = $("##{this.name}")[0]
+		uiCheckbox.checked = this.checked		
+		uiCheckbox.disabled = this.disabled	
 	

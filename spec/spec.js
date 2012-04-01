@@ -41,8 +41,8 @@
         var checkbox, func, name;
         checkbox = new cb.Checkbox("first", true);
         name = "?";
-        func = function(cb) {
-          return name = cb.name;
+        func = function() {
+          return name = this.name;
         };
         checkbox.visit(func);
         return expect(name).toBe("first");

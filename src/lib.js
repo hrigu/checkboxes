@@ -9,7 +9,7 @@
     }
 
     Ingredients.prototype.init = function() {
-      return this.checkboxes = [this._create("Kapern", false, [this._create("Gross", false)]).setFriends(["Oliven", "Pilze"]), this._create("Oliven", false), this._create("Salami", false, [this._create("Scharf", true)]), this._create("Pilze", false), this._create("Sardellen", true)];
+      return this.checkboxes = [this._create("Kapern", false, [this._create("Gross", false)]).setFriends(["Oliven", "Pilze"]), this._create("Oliven", false).setEnemies(["Sardellen"]), this._create("Salami", false, [this._create("Scharf", false)]), this._create("Pilze", false).setFriends(["Sardellen"]), this._create("Sardellen", false)];
     };
 
     Ingredients.prototype._create = function(name, checked, children) {
@@ -17,7 +17,7 @@
     };
 
     Ingredients.prototype.update = function(name, checked) {
-      var child, element, friendName, _i, _j, _len, _len2, _ref, _ref2, _results;
+      var child, element, enemyName, friendName, _i, _j, _k, _len, _len2, _len3, _ref, _ref2, _ref3;
       element = this.find(name);
       element.checked = checked;
       _ref = element.children;
@@ -26,12 +26,16 @@
         child.checked = checked;
       }
       _ref2 = element.friends;
-      _results = [];
       for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
         friendName = _ref2[_j];
-        _results.push(this.find(friendName).checked = checked);
+        this.find(friendName).checked = checked;
       }
-      return _results;
+      _ref3 = element.enemies;
+      for (_k = 0, _len3 = _ref3.length; _k < _len3; _k++) {
+        enemyName = _ref3[_k];
+        this.find(enemyName).disabled = checked;
+      }
+      if (element.updateHandler !== null) return this.visit(element.updateHandler);
     };
 
     Ingredients.prototype.visit = function(func) {
@@ -48,8 +52,8 @@
     Ingredients.prototype.find = function(name) {
       var found;
       found = null;
-      this.visit(function(checkbox) {
-        if (checkbox.name === name) return found = checkbox;
+      this.visit(function() {
+        if (this.name === name) return found = this;
       });
       return found;
     };
@@ -63,6 +67,12 @@
     Checkbox.prototype.parent = null;
 
     Checkbox.prototype.friends = [];
+
+    Checkbox.prototype.enemies = [];
+
+    Checkbox.prototype.disabled = false;
+
+    Checkbox.prototype.updateHandler = null;
 
     function Checkbox(name, checked, children) {
       var child, _i, _len, _ref;
@@ -83,6 +93,16 @@
       return this;
     };
 
+    Checkbox.prototype.setEnemies = function(enemies) {
+      this.enemies = enemies;
+      return this;
+    };
+
+    Checkbox.prototype.setUpdateHandler = function(updateHandler) {
+      this.updateHandler = updateHandler;
+      return this;
+    };
+
     Checkbox.prototype.level = function(size) {
       if (size == null) size = 0;
       if (this.parent !== null) {
@@ -94,7 +114,7 @@
 
     Checkbox.prototype.visit = function(func) {
       var child, _i, _len, _ref, _results;
-      func(this);
+      func.call(this);
       _ref = this.children;
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {

@@ -14,8 +14,8 @@
   addCheckboxes = function(ingredients) {
     var container, func;
     container = $('#chooser');
-    func = function(checkbox) {
-      return append(container, checkbox);
+    func = function() {
+      return append(container, this);
     };
     return ingredients.visit(func);
   };
@@ -43,10 +43,11 @@
   };
 
   updateUI = function(ingredients) {
-    return ingredients.visit(function(checkbox) {
-      var jQueryElement;
-      jQueryElement = $("#" + checkbox.name);
-      return jQueryElement[0].checked = checkbox.checked;
+    return ingredients.visit(function() {
+      var uiCheckbox;
+      uiCheckbox = $("#" + this.name)[0];
+      uiCheckbox.checked = this.checked;
+      return uiCheckbox.disabled = this.disabled;
     });
   };
 
