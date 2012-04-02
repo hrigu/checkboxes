@@ -1,10 +1,10 @@
 (function() {
 
-  describe("Ingredients", function() {
+  describe("CheckboxGroup", function() {
     var ingredients;
     ingredients = null;
     beforeEach(function() {
-      return ingredients = new cb.CheckboxGroup([new cb.Checkbox("Gemüse", false, [new cb.Checkbox("Tomaten", false), new cb.Checkbox("Artischokken", false).setFriends(["Knoblauch"])]), new cb.Checkbox("Knoblauch", false)]);
+      return ingredients = new cb.CheckboxGroup([new cb.Checkbox("Gemüse", false, [new cb.Checkbox("Tomaten", false).setEnemies(["Knoblauch"]), new cb.Checkbox("Artischokken", false).setFriends(["Knoblauch"])]), new cb.Checkbox("Peperoni", false), new cb.Checkbox("Knoblauch", false).setFriends(["Peperoni"])]);
     });
     it("can visit the elements", function() {
       var func, i;
@@ -13,7 +13,7 @@
         return i++;
       };
       ingredients.visit(func);
-      return expect(i).toBe(4);
+      return expect(i).toBe(5);
     });
     it("can find any element by name", function() {
       var found;
@@ -29,11 +29,24 @@
         expect(element.children[0].checked).toBe(true);
         return expect(element.children[1].checked).toBe(true);
       });
-      return it("can updates its friends as well", function() {
+      it("can updates its direct friends as well", function() {
         var element;
         ingredients.update("Artischokken", true);
         element = ingredients.find("Artischokken");
         return expect(ingredients.find(element.friends[0]).checked).toBe(true);
+      });
+      it("can disable enemies", function() {
+        var enemy;
+        enemy = ingredients.find("Knoblauch");
+        expect(enemy.disabled).toBe(false);
+        ingredients.update("Tomaten", true);
+        return expect(enemy.disabled).toBe(true);
+      });
+      return it("can update friends of friends", function() {
+        var friendOfFriend;
+        ingredients.update("Artischokken", true);
+        friendOfFriend = ingredients.find("Peperoni");
+        return expect(friendOfFriend.checked).toBe(true);
       });
     });
   });
@@ -70,7 +83,7 @@
       checkbox.setFriends(["friend"]);
       return expect(friend.name).toBe("friend");
     });
-    return describe("A child checkbox", function() {
+    describe("A child checkbox", function() {
       var child;
       child = null;
       beforeEach(function() {
@@ -83,6 +96,31 @@
       });
       return it("has a level of 1", function() {
         return expect(child.level()).toBe(1);
+      });
+    });
+    return describe("A checkbox can", function() {
+      var box, finder, friend, friendOfFriend;
+      box = null;
+      friend = null;
+      friendOfFriend = null;
+      finder = {
+        find: function(name) {
+          var found;
+          if (name === "box") found = box;
+          if (name === "friend") found = friend;
+          if (name === "friendOfFriend") found = friendOfFriend;
+          return found;
+        }
+      };
+      beforeEach(function() {
+        box = new cb.Checkbox("box", false).setFriends(["friend"]);
+        friend = new cb.Checkbox("friend", false).setFriends(["friendOfFriend"]);
+        return friendOfFriend = new cb.Checkbox("friendOfFriend", false);
+      });
+      return it("update its friends and their friends", function() {
+        box.setChecked(true, finder);
+        expect(friend.checked).toBe(true);
+        return expect(friendOfFriend.checked).toBe(true);
       });
     });
   });

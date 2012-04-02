@@ -5,13 +5,13 @@
   cb.CheckboxGroup = (function() {
 
     function CheckboxGroup(checkboxes) {
-      this.checkboxes = checkboxes;
+      this.checkboxes = checkboxes != null ? checkboxes : [];
     }
 
     CheckboxGroup.prototype.update = function(name, checked) {
       var child, element, enemyName, friendName, _i, _j, _k, _len, _len2, _len3, _ref, _ref2, _ref3;
       element = this.find(name);
-      element.checked = checked;
+      element.setChecked(checked, this);
       _ref = element.children;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         child = _ref[_i];
@@ -50,6 +50,14 @@
       return found;
     };
 
+    CheckboxGroup.prototype.create = function(name, checked, children) {
+      var checkbox;
+      checkbox = new cb.Checkbox(name, checked, children);
+      checkbox.checkboxGroup = this;
+      this.checkboxes.push(checkbox);
+      return checkbox;
+    };
+
     return CheckboxGroup;
 
   })();
@@ -61,6 +69,8 @@
     Checkbox.prototype.friends = [];
 
     Checkbox.prototype.enemies = [];
+
+    Checkbox.prototype.checkboxGroup = null;
 
     Checkbox.prototype.disabled = false;
 
@@ -112,6 +122,19 @@
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         child = _ref[_i];
         _results.push(child.visit(func));
+      }
+      return _results;
+    };
+
+    Checkbox.prototype.setChecked = function(checked, finder) {
+      var friend, friendName, _i, _len, _ref, _results;
+      this.checked = checked;
+      _ref = this.friends;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        friendName = _ref[_i];
+        friend = finder.find(friendName);
+        _results.push(friend.setChecked(checked, finder));
       }
       return _results;
     };

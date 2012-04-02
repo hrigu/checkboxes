@@ -2,13 +2,14 @@ this.cb = {}
 
 class cb.CheckboxGroup
 
-	constructor: (@checkboxes) ->
+	constructor: (@checkboxes = []) ->
 	update: (name, checked) ->
 		element = this.find(name)
-		element.checked = checked
+		element.setChecked(checked, this)
 		child.checked = checked for child in element.children
 		for friendName in element.friends
-			this.find(friendName).checked = checked		
+			this.find(friendName).checked = checked	
+			
 		for enemyName in element.enemies
 				this.find(enemyName).disabled = checked
 		if element.updateHandler != null
@@ -23,11 +24,18 @@ class cb.CheckboxGroup
 			if this.name is name
 				found = this
 		found
+		
+	create: (name, checked, children) ->
+		checkbox = new cb.Checkbox(name, checked, children)
+		checkbox.checkboxGroup = this
+		@checkboxes.push checkbox
+		checkbox
 
 class cb.Checkbox
 	parent: null
 	friends: []
 	enemies:[]
+	checkboxGroup: null
 	disabled: false
 	updateHandler: null
 	constructor: (@name, @checked, @children = []) ->
@@ -41,3 +49,12 @@ class cb.Checkbox
 	visit: (func) ->
 		func.call(this)
 		child.visit(func) for child in @children
+	
+		
+	setChecked: (checked, finder) ->
+		@checked = checked
+		for friendName in @friends
+			friend = finder.find(friendName)
+			friend.setChecked(checked, finder)
+
+	
