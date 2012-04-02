@@ -2,21 +2,13 @@
 
   this.cb = {};
 
-  cb.Ingredients = (function() {
+  cb.CheckboxGroup = (function() {
 
-    function Ingredients() {
-      this.init();
+    function CheckboxGroup(checkboxes) {
+      this.checkboxes = checkboxes;
     }
 
-    Ingredients.prototype.init = function() {
-      return this.checkboxes = [this._create("Kapern", false, [this._create("Gross", false)]).setFriends(["Oliven", "Pilze"]), this._create("Oliven", false).setEnemies(["Sardellen"]), this._create("Salami", false, [this._create("Scharf", false)]), this._create("Pilze", false).setFriends(["Sardellen"]), this._create("Sardellen", false)];
-    };
-
-    Ingredients.prototype._create = function(name, checked, children) {
-      return new cb.Checkbox(name, checked, children);
-    };
-
-    Ingredients.prototype.update = function(name, checked) {
+    CheckboxGroup.prototype.update = function(name, checked) {
       var child, element, enemyName, friendName, _i, _j, _k, _len, _len2, _len3, _ref, _ref2, _ref3;
       element = this.find(name);
       element.checked = checked;
@@ -38,7 +30,7 @@
       if (element.updateHandler !== null) return this.visit(element.updateHandler);
     };
 
-    Ingredients.prototype.visit = function(func) {
+    CheckboxGroup.prototype.visit = function(func) {
       var checkbox, _i, _len, _ref, _results;
       _ref = this.checkboxes;
       _results = [];
@@ -49,7 +41,7 @@
       return _results;
     };
 
-    Ingredients.prototype.find = function(name) {
+    CheckboxGroup.prototype.find = function(name) {
       var found;
       found = null;
       this.visit(function() {
@@ -58,7 +50,7 @@
       return found;
     };
 
-    return Ingredients;
+    return CheckboxGroup;
 
   })();
 

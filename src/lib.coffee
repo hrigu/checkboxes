@@ -1,22 +1,8 @@
 this.cb = {}
 
-class cb.Ingredients
+class cb.CheckboxGroup
 
-	constructor: () ->
-		this.init()
-	init: () ->
-		@checkboxes = [
-			#this._create("Tutti", false).setUpdateHandler( -> this.checked = true)
-			this._create("Kapern", false, [this._create("Gross", false)]).setFriends(["Oliven", "Pilze"])
-			this._create("Oliven", false).setEnemies ["Sardellen"]
-			this._create("Salami", false, [this._create("Scharf", false)])
-			this._create("Pilze", false).setFriends ["Sardellen"]
-			this._create("Sardellen", false)
-		]
-		
-	_create: (name, checked, children) ->
-		new cb.Checkbox(name, checked, children)
-		
+	constructor: (@checkboxes) ->
 	update: (name, checked) ->
 		element = this.find(name)
 		element.checked = checked

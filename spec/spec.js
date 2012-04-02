@@ -4,10 +4,7 @@
     var ingredients;
     ingredients = null;
     beforeEach(function() {
-      return ingredients = new cb.Ingredients();
-    });
-    it("has 5 parent checkboxes", function() {
-      return expect(ingredients.checkboxes.length).toBe(5);
+      return ingredients = new cb.CheckboxGroup([new cb.Checkbox("Gemüse", false, [new cb.Checkbox("Tomaten", false), new cb.Checkbox("Artischokken", false).setFriends(["Knoblauch"])]), new cb.Checkbox("Knoblauch", false)]);
     });
     it("can visit the elements", function() {
       var func, i;
@@ -16,20 +13,26 @@
         return i++;
       };
       ingredients.visit(func);
-      return expect(i).toBe(7);
+      return expect(i).toBe(4);
     });
-    it("can find an element", function() {
+    it("can find any element by name", function() {
       var found;
-      found = ingredients.find("Oliven");
-      return expect(found.name).toBe("Oliven");
+      found = ingredients.find("Tomaten");
+      return expect(found.name).toBe("Tomaten");
     });
     return describe("update", function() {
-      return it("can update", function() {
+      it("can update an element and its children", function() {
         var element;
-        ingredients.update("Kapern", true);
-        element = ingredients.find("Kapern");
+        ingredients.update("Gemüse", true);
+        element = ingredients.find("Gemüse");
         expect(element.checked).toBe(true);
         expect(element.children[0].checked).toBe(true);
+        return expect(element.children[1].checked).toBe(true);
+      });
+      return it("can updates its friends as well", function() {
+        var element;
+        ingredients.update("Artischokken", true);
+        element = ingredients.find("Artischokken");
         return expect(ingredients.find(element.friends[0]).checked).toBe(true);
       });
     });

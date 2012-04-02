@@ -1,25 +1,32 @@
 describe "Ingredients", ->
 	ingredients = null
 	beforeEach ->
-		ingredients = new cb.Ingredients()
+		ingredients = new cb.CheckboxGroup([
+			new cb.Checkbox("Gemüse", false, [
+				new cb.Checkbox("Tomaten", false)
+				new cb.Checkbox("Artischokken", false).setFriends(["Knoblauch"])
+			])
+			new cb.Checkbox("Knoblauch", false)
+		])
 
-	it "has 5 parent checkboxes", ->
-		expect(ingredients.checkboxes.length).toBe 5
-			
 	it "can visit the elements", ->
 		i = 0
 		func = () -> i++
 		ingredients.visit(func)
-		expect(i).toBe 7
-	it "can find an element", ->
-		found = ingredients.find "Oliven"
-		expect(found.name).toBe "Oliven"
+		expect(i).toBe 4
+	it "can find any element by name", ->
+		found = ingredients.find "Tomaten"
+		expect(found.name).toBe "Tomaten"
 	describe "update", ->
-		it "can update", ->
-			ingredients.update("Kapern", true)
-			element = ingredients.find("Kapern")
+		it "can update an element and its children", ->
+			ingredients.update("Gemüse", true)
+			element = ingredients.find("Gemüse")
 			expect(element.checked).toBe true
 			expect(element.children[0].checked).toBe true
+			expect(element.children[1].checked).toBe true
+		it "can updates its friends as well", ->
+			ingredients.update("Artischokken", true)
+			element = ingredients.find("Artischokken")
 			expect(ingredients.find(element.friends[0]).checked).toBe true
 			
 		
