@@ -2,67 +2,101 @@ this.cb = {}
 
 class cb.CheckboxGroup
 
-	constructor: (@checkboxes = []) ->
+	constructor: (@checkboxes = [], @supercheckboxes = []) ->
+
 	update: (name, checked) ->
-		element = this.find(name)
-		element.setChecked(checked, this)
+		trigger = this.find(name)
+		if (checked)
+			if trigger instanceof cb.SuperCheckbox
+				for checkbox in @supercheckboxes
+					if (checkbox.checked)
+						checkbox.setUnchecked()						
+			
+			trigger.setChecked()
+		else 
+			trigger.setUnchecked()
+		if (!(trigger instanceof cb.SuperCheckbox))	
+			checkbox.checkIfAllFriendsAreChecked() for checkbox in @supercheckboxes
+			this._deselectAllButTheBoss()
 		
-		current.checkIfAllMyFriendsAreChecked(this) for current in @checkboxes
 		null
 			
 	visit: (func) ->
 		checkbox.visit(func) for checkbox in @checkboxes
+		checkbox.visit(func) for checkbox in @supercheckboxes
 	
 	find: (name) ->
 		found = null
 		this.visit ->
 			if this.name is name
 				found = this
-		found	
+		found
 		
-	findCheckboxesWhichHasThisFriend: (name) ->
-		found = []
-		this.visit ->
-			for candidate in this.friends
-				if (candidate is name)
-					found.push this
-		found		
-
+	_deselectAllButTheBoss:() ->
+		checked = []
+		for checkbox in @supercheckboxes
+			checked.push checkbox if checkbox.checked
+		if checked.length > 1
+			winner = checked[0]
+			for checkbox in checked
+				winner = checkbox if  winner.countFriends() < checkbox.countFriends()
+			for box in checked
+				if box != winner
+					box.checked = false
+		
 class cb.Checkbox
-	isCheckIfAllMyFriendsAreChecked: false
-	friends: []
-	enemy: null
-	constructor: (@name, @checked, @children = []) ->
-	setFriends: (@friends) -> this		
-	setUpdateHandler: (@updateHandler) -> this		
+	constructor: (@name, @checked) ->
+		@fans = []
+		@friends = []
+		@isTrigger = false
+		
+	setFriends: (@friends) -> 
+		for friend in @friends
+			friend.fans.push(this)
+		this		
+
 	visit: (func) ->
 		func.call(this)
-		child.visit(func) for child in @children
-	
 		
-	setChecked: (checked, finder) ->
-		@checked = checked
-		if @enemy != null
-			@enemy.checked = !checked
-		if checked
-			for friendName in @friends
-				friend = finder.find(friendName)
-				friend.setChecked(checked, finder)
-		else 
-			for hasMeAsFriend in finder.findCheckboxesWhichHasThisFriend(@name)
-				hasMeAsFriend.setChecked(checked, finder)
-	
-	checkIfAllMyFriendsAreChecked: (finder)->		
-		for friendName in @friends
-			friend = finder.find(friendName)
-			friend.checkIfAllMyFriendsAreChecked(finder)
-		if this.isCheckIfAllMyFriendsAreChecked
-			areAllChecked = false
-			
-			for friendName in @friends
-				friend = finder.find(friendName)
-				areAllChecked = friend.checked
-				break if !areAllChecked
-			this.checked = true if areAllChecked		
+	#some friends are counted several times
+	countFriends: ->
+		x = @friends.length
+		for friend in @friends
+			x += friend.countFriends()
+		x
+		
+	setChecked: ->
+		@checked = true
+		for friend in @friends
+			friend.setChecked()
+	setUnchecked: ->
+		@checked = false
+		this._uncheckFans()
 
+	_uncheckFans: -> 
+		@checked = false
+		for fan in @fans
+			fan._uncheckFans()
 	
+	_uncheckFriends: () ->
+		@checked = false
+		for friend in @friends
+			friend._uncheckFriends()
+	
+	_areAllFriendsChecked: (checked) ->
+		for friend in @friends
+			return false if  !friend.checked
+		for friend in @friends
+			checked = friend._areAllFriendsChecked(checked) 
+			break if !checked
+		checked
+				
+		
+class cb.SuperCheckbox extends cb.Checkbox	
+	
+			
+	setUnchecked: ->
+		this._uncheckFriends()
+		
+	checkIfAllFriendsAreChecked: ->
+		@checked = this._areAllFriendsChecked(true)
