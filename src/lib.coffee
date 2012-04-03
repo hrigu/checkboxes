@@ -6,9 +6,9 @@ class cb.CheckboxGroup
 	update: (name, checked) ->
 		element = this.find(name)
 		element.setChecked(checked, this)
-			
-		for enemyName in element.enemies
-				this.find(enemyName).disabled = checked
+		
+		current.checkIfAllMyFriendsAreChecked(this) for current in @checkboxes
+		null
 			
 	visit: (func) ->
 		checkbox.visit(func) for checkbox in @checkboxes
@@ -18,15 +18,22 @@ class cb.CheckboxGroup
 		this.visit ->
 			if this.name is name
 				found = this
+		found	
+		
+	findCheckboxesWhichHasThisFriend: (name) ->
+		found = []
+		this.visit ->
+			for candidate in this.friends
+				if (candidate is name)
+					found.push this
 		found		
 
 class cb.Checkbox
-	disabled: false
+	isCheckIfAllMyFriendsAreChecked: false
 	friends: []
-	enemies: []
+	enemy: null
 	constructor: (@name, @checked, @children = []) ->
 	setFriends: (@friends) -> this		
-	setEnemies: (@enemies) -> this
 	setUpdateHandler: (@updateHandler) -> this		
 	visit: (func) ->
 		func.call(this)
@@ -35,8 +42,27 @@ class cb.Checkbox
 		
 	setChecked: (checked, finder) ->
 		@checked = checked
+		if @enemy != null
+			@enemy.checked = !checked
+		if checked
+			for friendName in @friends
+				friend = finder.find(friendName)
+				friend.setChecked(checked, finder)
+		else 
+			for hasMeAsFriend in finder.findCheckboxesWhichHasThisFriend(@name)
+				hasMeAsFriend.setChecked(checked, finder)
+	
+	checkIfAllMyFriendsAreChecked: (finder)->		
 		for friendName in @friends
 			friend = finder.find(friendName)
-			friend.setChecked(checked, finder)
+			friend.checkIfAllMyFriendsAreChecked(finder)
+		if this.isCheckIfAllMyFriendsAreChecked
+			areAllChecked = false
+			
+			for friendName in @friends
+				friend = finder.find(friendName)
+				areAllChecked = friend.checked
+				break if !areAllChecked
+			this.checked = true if areAllChecked		
 
 	
