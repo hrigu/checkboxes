@@ -24,7 +24,31 @@
     it("should find any element by name", function() {
       return expect(checkboxGroup.find("Peperoni").name).toBe("Peperoni");
     });
-    return describe("the method 'update'", function() {
+    describe("the method 'update' with spies", function() {
+      beforeEach(function() {
+        spyOn(knoblauch, "setChecked");
+        spyOn(knoblauch, "setUnchecked");
+        spyOn(checkboxGroup, '_postProcess');
+        return spyOn(checkboxGroup, '_toggleIfSupercheckbox');
+      });
+      describe("with check = true", function() {
+        return it("should call setChecked and others", function() {
+          checkboxGroup.update("Knoblauch", true);
+          expect(checkboxGroup._toggleIfSupercheckbox).toHaveBeenCalledWith(knoblauch);
+          expect(knoblauch.setChecked).toHaveBeenCalled();
+          return expect(checkboxGroup._postProcess).toHaveBeenCalledWith(knoblauch);
+        });
+      });
+      return describe("with check = false", function() {
+        return it("should call setUnchecked and _postprocess", function() {
+          expect(checkboxGroup._toggleIfSupercheckbox).not.toHaveBeenCalled();
+          checkboxGroup.update("Knoblauch", false);
+          expect(knoblauch.setUnchecked).toHaveBeenCalled();
+          return expect(checkboxGroup._postProcess).toHaveBeenCalledWith(knoblauch);
+        });
+      });
+    });
+    return describe("the method 'update' with real objects", function() {
       describe("with check = true", function() {
         it("should check the specified checkbox and its direct friends", function() {
           checkboxGroup.update("Knoblauch", true);

@@ -19,7 +19,29 @@ describe "class CheckboxGroup", ->
 	it "should find any element by name", ->
 		expect(checkboxGroup.find("Peperoni").name).toBe "Peperoni"
 	
-	describe "the method 'update'", ->
+	describe "the method 'update' with spies", ->
+		beforeEach ->
+			spyOn(knoblauch, "setChecked")
+			spyOn(knoblauch, "setUnchecked")
+			spyOn(checkboxGroup, '_postProcess');
+			spyOn(checkboxGroup, '_toggleIfSupercheckbox');
+
+		describe "with check = true", ->		
+			it "should call setChecked and others", ->
+				checkboxGroup.update("Knoblauch", true)
+				expect(checkboxGroup._toggleIfSupercheckbox).toHaveBeenCalledWith(knoblauch)
+				expect(knoblauch.setChecked).toHaveBeenCalled();			
+				expect(checkboxGroup._postProcess).toHaveBeenCalledWith(knoblauch)
+
+		describe "with check = false", ->		
+			it "should call setUnchecked and _postprocess", ->
+				expect(checkboxGroup._toggleIfSupercheckbox).not.toHaveBeenCalled()
+				checkboxGroup.update("Knoblauch", false)
+				expect(knoblauch.setUnchecked).toHaveBeenCalled();			
+				expect(checkboxGroup._postProcess).toHaveBeenCalledWith(knoblauch)
+			
+			
+	describe "the method 'update' with real objects", ->
 		describe "with check = true", ->
 			it "should check the specified checkbox and its direct friends", ->
 				checkboxGroup.update("Knoblauch", true)
@@ -34,10 +56,7 @@ describe "class CheckboxGroup", ->
 				checkboxGroup.update("Artischokken", false)
 				expect(artischokken.checked).toBe false
 				expect(peperoni.checked).toBe false
-				expect(knoblauch.checked).toBe false
-				
-				
-		
+				expect(knoblauch.checked).toBe false						
 		
 describe "class Checkbox", ->
 	trigger = null
