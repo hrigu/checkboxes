@@ -7,19 +7,25 @@ class cb.CheckboxGroup
 	update: (name, checked) ->
 		trigger = this.find(name)
 		if (checked)
-			if trigger instanceof cb.SuperCheckbox
-				for checkbox in @supercheckboxes
-					if (checkbox.checked)
-						checkbox.setUnchecked()						
-			
+			this._toggleIfSupercheckbox(trigger)			
 			trigger.setChecked()
 		else 
 			trigger.setUnchecked()
+		this._postProcess(trigger)
+		null
+		
+	_postProcess: (trigger) ->
 		if (!(trigger instanceof cb.SuperCheckbox))	
 			checkbox.checkIfAllFriendsAreChecked() for checkbox in @supercheckboxes
-			this._deselectAllButTheBoss()
+			this._deselectAllButTheBoss()			
 		
-		null
+
+	_toggleIfSupercheckbox: (trigger) ->
+		if trigger instanceof cb.SuperCheckbox
+			for checkbox in @supercheckboxes
+				if (checkbox.checked)
+					checkbox.setUnchecked()						
+
 			
 	visit: (func) ->
 		checkbox.visit(func) for checkbox in @checkboxes
@@ -69,19 +75,24 @@ class cb.Checkbox
 		@checked = true
 		for friend in @friends
 			friend.setChecked()
+			
 	setUnchecked: ->
-		@checked = false
 		this._uncheckFans()
 
-	_uncheckFans: -> 
-		@checked = false
-		for fan in @fans
-			fan._uncheckFans()
+	_uncheckFans: ->
+		if @checked
+			console.log "_uncheckFans: #{@name}"
+			for fan in @fans
+				fan._uncheckFans()
+			@checked = false
 	
 	_uncheckFriends: () ->
-		@checked = false
-		for friend in @friends
-			friend._uncheckFriends()
+		if @checked
+			console.log "_uncheckFriends: #{@name}"
+			for friend in @friends
+				friend._uncheckFriends()
+				this._uncheckFans()
+			@checked = false
 	
 	_areAllFriendsChecked: (checked) ->
 		for friend in @friends

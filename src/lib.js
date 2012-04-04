@@ -12,29 +12,45 @@
     }
 
     CheckboxGroup.prototype.update = function(name, checked) {
-      var checkbox, trigger, _i, _j, _len, _len2, _ref, _ref2;
+      var trigger;
       trigger = this.find(name);
       if (checked) {
-        if (trigger instanceof cb.SuperCheckbox) {
-          _ref = this.supercheckboxes;
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            checkbox = _ref[_i];
-            if (checkbox.checked) checkbox.setUnchecked();
-          }
-        }
+        this._toggleIfSupercheckbox(trigger);
         trigger.setChecked();
       } else {
         trigger.setUnchecked();
       }
+      this._postProcess(trigger);
+      return null;
+    };
+
+    CheckboxGroup.prototype._postProcess = function(trigger) {
+      var checkbox, _i, _len, _ref;
       if (!(trigger instanceof cb.SuperCheckbox)) {
-        _ref2 = this.supercheckboxes;
-        for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
-          checkbox = _ref2[_j];
+        _ref = this.supercheckboxes;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          checkbox = _ref[_i];
           checkbox.checkIfAllFriendsAreChecked();
         }
-        this._deselectAllButTheBoss();
+        return this._deselectAllButTheBoss();
       }
-      return null;
+    };
+
+    CheckboxGroup.prototype._toggleIfSupercheckbox = function(trigger) {
+      var checkbox, _i, _len, _ref, _results;
+      if (trigger instanceof cb.SuperCheckbox) {
+        _ref = this.supercheckboxes;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          checkbox = _ref[_i];
+          if (checkbox.checked) {
+            _results.push(checkbox.setUnchecked());
+          } else {
+            _results.push(void 0);
+          }
+        }
+        return _results;
+      }
     };
 
     CheckboxGroup.prototype.visit = function(func) {
@@ -142,32 +158,34 @@
     };
 
     Checkbox.prototype.setUnchecked = function() {
-      this.checked = false;
       return this._uncheckFans();
     };
 
     Checkbox.prototype._uncheckFans = function() {
-      var fan, _i, _len, _ref, _results;
-      this.checked = false;
-      _ref = this.fans;
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        fan = _ref[_i];
-        _results.push(fan._uncheckFans());
+      var fan, _i, _len, _ref;
+      if (this.checked) {
+        console.log("_uncheckFans: " + this.name);
+        _ref = this.fans;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          fan = _ref[_i];
+          fan._uncheckFans();
+        }
+        return this.checked = false;
       }
-      return _results;
     };
 
     Checkbox.prototype._uncheckFriends = function() {
-      var friend, _i, _len, _ref, _results;
-      this.checked = false;
-      _ref = this.friends;
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        friend = _ref[_i];
-        _results.push(friend._uncheckFriends());
+      var friend, _i, _len, _ref;
+      if (this.checked) {
+        console.log("_uncheckFriends: " + this.name);
+        _ref = this.friends;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          friend = _ref[_i];
+          friend._uncheckFriends();
+          this._uncheckFans();
+        }
+        return this.checked = false;
       }
-      return _results;
     };
 
     Checkbox.prototype._areAllFriendsChecked = function(checked) {
