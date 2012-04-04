@@ -6,9 +6,17 @@
 
   cb.CheckboxGroup = (function() {
 
-    function CheckboxGroup(checkboxes, supercheckboxes) {
-      this.checkboxes = checkboxes != null ? checkboxes : [];
-      this.supercheckboxes = supercheckboxes != null ? supercheckboxes : [];
+    function CheckboxGroup(allCheckboxes) {
+      var checkbox, _i, _len, _ref;
+      this.allCheckboxes = allCheckboxes;
+      this.supercheckboxes = [];
+      _ref = this.allCheckboxes;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        checkbox = _ref[_i];
+        if (checkbox instanceof cb.SuperCheckbox) {
+          this.supercheckboxes.push(checkbox);
+        }
+      }
     }
 
     CheckboxGroup.prototype.update = function(name, checked) {
@@ -54,16 +62,11 @@
     };
 
     CheckboxGroup.prototype.visit = function(func) {
-      var checkbox, _i, _j, _len, _len2, _ref, _ref2, _results;
-      _ref = this.checkboxes;
+      var checkbox, _i, _len, _ref, _results;
+      _ref = this.allCheckboxes;
+      _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         checkbox = _ref[_i];
-        checkbox.visit(func);
-      }
-      _ref2 = this.supercheckboxes;
-      _results = [];
-      for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
-        checkbox = _ref2[_j];
         _results.push(checkbox.visit(func));
       }
       return _results;
@@ -182,8 +185,8 @@
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           friend = _ref[_i];
           friend._uncheckFriends();
-          this._uncheckFans();
         }
+        this._uncheckFans();
         return this.checked = false;
       }
     };

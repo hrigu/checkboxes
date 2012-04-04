@@ -64,8 +64,8 @@
     it("can have friends", function() {
       return expect(box.friends[0].name).toBe("friend");
     });
-    it("knows who have it as friend", function() {
-      return expect(friend.othersWhoHaveMeAsFriend[0].name).toBe("box");
+    it("can have fans", function() {
+      return expect(friend.fans[0].name).toBe("box");
     });
     describe("setChecked", function() {
       describe("when checking the checkbox", function() {

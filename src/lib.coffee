@@ -2,7 +2,11 @@ this.cb = {}
 
 class cb.CheckboxGroup
 
-	constructor: (@checkboxes = [], @supercheckboxes = []) ->
+	constructor: (@allCheckboxes) ->
+		@supercheckboxes = []
+		for checkbox in @allCheckboxes
+			@supercheckboxes.push checkbox if checkbox instanceof cb.SuperCheckbox
+				
 
 	update: (name, checked) ->
 		trigger = this.find(name)
@@ -28,8 +32,7 @@ class cb.CheckboxGroup
 
 			
 	visit: (func) ->
-		checkbox.visit(func) for checkbox in @checkboxes
-		checkbox.visit(func) for checkbox in @supercheckboxes
+		checkbox.visit(func) for checkbox in @allCheckboxes
 	
 	find: (name) ->
 		found = null
@@ -91,7 +94,7 @@ class cb.Checkbox
 			console.log "_uncheckFriends: #{@name}"
 			for friend in @friends
 				friend._uncheckFriends()
-				this._uncheckFans()
+			this._uncheckFans()
 			@checked = false
 	
 	_areAllFriendsChecked: (checked) ->

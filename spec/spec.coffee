@@ -49,8 +49,8 @@ describe "Checkbox", ->
 	it "can have friends", ->
 		expect(box.friends[0].name).toBe("friend")
 		
-	it "knows who have it as friend", ->
-		expect(friend.othersWhoHaveMeAsFriend[0].name).toBe("box")
+	it "can have fans", ->
+		expect(friend.fans[0].name).toBe("box")
 		
 	describe "setChecked", ->
 		describe "when checking the checkbox", ->
