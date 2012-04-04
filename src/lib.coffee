@@ -20,7 +20,7 @@ class cb.CheckboxGroup
 		
 	_postProcess: (trigger) ->
 		if (!(trigger instanceof cb.SuperCheckbox))	
-			checkbox.checkIfAllFriendsAreChecked() for checkbox in @supercheckboxes
+			checkbox.setCheckedIfAllFriendsAreChecked() for checkbox in @supercheckboxes
 			this._deselectAllButTheBoss()			
 		
 
@@ -112,5 +112,5 @@ class cb.SuperCheckbox extends cb.Checkbox
 	setUnchecked: ->
 		this._uncheckFriends()
 		
-	checkIfAllFriendsAreChecked: ->
+	setCheckedIfAllFriendsAreChecked: ->
 		@checked = this._areAllFriendsChecked(true)

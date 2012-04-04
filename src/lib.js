@@ -38,7 +38,7 @@
         _ref = this.supercheckboxes;
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           checkbox = _ref[_i];
-          checkbox.checkIfAllFriendsAreChecked();
+          checkbox.setCheckedIfAllFriendsAreChecked();
         }
         return this._deselectAllButTheBoss();
       }
@@ -223,7 +223,7 @@
       return this._uncheckFriends();
     };
 
-    SuperCheckbox.prototype.checkIfAllFriendsAreChecked = function() {
+    SuperCheckbox.prototype.setCheckedIfAllFriendsAreChecked = function() {
       return this.checked = this._areAllFriendsChecked(true);
     };
 

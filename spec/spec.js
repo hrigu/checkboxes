@@ -10,7 +10,7 @@
       artischokken = new cb.Checkbox("Artischokken", false);
       peperoni = new cb.Checkbox("Peperoni", false).setFriends([artischokken]);
       knoblauch = new cb.Checkbox("Knoblauch", false).setFriends([peperoni]);
-      return ingredients = new cb.CheckboxGroup([peperoni, knoblauch]);
+      return ingredients = new cb.CheckboxGroup([artischokken, peperoni, knoblauch]);
     });
     it("can visit the elements", function() {
       var func, i;
@@ -19,12 +19,10 @@
         return i++;
       };
       ingredients.visit(func);
-      return expect(i).toBe(2);
+      return expect(i).toBe(3);
     });
     it("can find any element by name", function() {
-      var found;
-      found = ingredients.find("Peperoni");
-      return expect(found.name).toBe("Peperoni");
+      return expect(ingredients.find("Peperoni").name).toBe("Peperoni");
     });
     return describe("update", function() {
       it("can updates its direct friends", function() {
@@ -38,17 +36,23 @@
     });
   });
 
-  describe("Checkbox", function() {
-    var box, friend, friendOfFriend, otherFriend;
-    box = null;
+  describe("class Checkbox", function() {
+    var fanOfFanOfTrigger, fanOfFriend, fanOfTrigger, friend, friendOfFriend, otherFriend, trigger;
+    trigger = null;
+    fanOfTrigger = null;
+    fanOfFanOfTrigger = null;
     friend = null;
     otherFriend = null;
     friendOfFriend = null;
+    fanOfFriend = null;
     beforeEach(function() {
       friendOfFriend = new cb.Checkbox("friendOfFriend", false);
       friend = new cb.Checkbox("friend", false).setFriends([friendOfFriend]);
+      fanOfFriend = new cb.Checkbox("fanOfFriend", false).setFriends([friend]);
       otherFriend = new cb.Checkbox("otherFriend", false);
-      return box = new cb.Checkbox("box", false).setFriends([friend, otherFriend]);
+      trigger = new cb.Checkbox("trigger", false).setFriends([friend, otherFriend]);
+      fanOfTrigger = new cb.Checkbox("fanOfTrigger", false).setFriends([trigger]);
+      return fanOfFanOfTrigger = new cb.Checkbox("fanOfFanOfTrigger", false).setFriends([fanOfTrigger]);
     });
     describe("can be visited", function() {
       return it("returns the itself to the caller", function() {
@@ -57,72 +61,119 @@
         func = function() {
           return name = this.name;
         };
-        box.visit(func);
-        return expect(name).toBe("box");
+        trigger.visit(func);
+        return expect(name).toBe("trigger");
       });
     });
     it("can have friends", function() {
-      return expect(box.friends[0].name).toBe("friend");
+      return expect(trigger.friends[0].name).toBe("friend");
     });
     it("can have fans", function() {
-      return expect(friend.fans[0].name).toBe("box");
+      return expect(trigger.fans[0].name).toBe("fanOfTrigger");
     });
-    describe("setChecked", function() {
-      describe("when checking the checkbox", function() {
-        return it("checkes its friends and their friends as well", function() {
-          box.setChecked(true);
-          expect(friend.checked).toBe(true);
-          return expect(friendOfFriend.checked).toBe(true);
-        });
+    describe("method setChecked", function() {
+      it("checkes its friends and their friends as well", function() {
+        trigger.setChecked();
+        expect(friend.checked).toBe(true);
+        return expect(friendOfFriend.checked).toBe(true);
       });
-      return describe("when unchecking the checkbox", function() {
-        it("it uncheckes not its checked friends and their checked friends", function() {
-          box.setChecked(true);
-          expect(friend.checked).toBe(true);
-          expect(friendOfFriend.checked).toBe(true);
-          box.setChecked(false);
-          expect(box.checked).toBe(false);
-          expect(friend.checked).toBe(true);
-          return expect(friendOfFriend.checked).toBe(true);
-        });
-        return it("it uncheckes the checkboxes which have this as friend", function() {
-          box.setChecked(true);
-          expect(friend.checked).toBe(true);
-          expect(friendOfFriend.checked).toBe(true);
-          friendOfFriend.setChecked(false);
-          expect(box.checked).toBe(false);
-          expect(friend.checked).toBe(false);
-          return expect(friendOfFriend.checked).toBe(false);
-        });
+      return it("but not the fans", function() {
+        trigger.setChecked();
+        expect(fanOfFriend.checked).toBe(false);
+        expect(fanOfTrigger.checked).toBe(false);
+        return expect(fanOfFanOfTrigger.checked).toBe(false);
       });
     });
-    describe("checkIfAllMyFriendsAreChecked", function() {
-      return describe("property isCheckIfAllMyFriendsAreChecked is true", function() {
-        beforeEach(function() {
-          return box.isCheckIfAllMyFriendsAreChecked = true;
-        });
-        return it("checkes if all its friends are checked", function() {
-          expect(box.checked).toBe(false);
-          friend.setChecked(true);
-          otherFriend.setChecked(true);
-          expect(box.checked).toBe(false);
-          box.checkIfAllMyFriendsAreChecked();
-          return expect(box.checked).toBe(true);
-        });
+    return describe("method setUnchecked", function() {
+      it("uncheckes the fans and their fans", function() {
+        fanOfFanOfTrigger.setChecked();
+        expect(friend.checked).toBe(true);
+        expect(friendOfFriend.checked).toBe(true);
+        expect(fanOfTrigger.checked).toBe(true);
+        fanOfFriend.setChecked();
+        expect(fanOfFriend.checked).toBe(true);
+        trigger.setUnchecked();
+        expect(trigger.checked).toBe(false);
+        expect(fanOfTrigger.checked).toBe(false);
+        expect(fanOfFanOfTrigger.checked).toBe(false);
+        return expect(fanOfFriend.checked).toBe(true);
       });
-    });
-    return describe("can toggle collegue", function() {
-      beforeEach(function() {
-        friend.enemy = otherFriend;
-        return otherFriend.enemy = friend;
-      });
-      return it("toggle college when checked", function() {
-        friend.setChecked(false);
-        expect(otherFriend.checked).toBe(true);
-        friend.setChecked(true);
-        return expect(otherFriend.checked).toBe(false);
+      return it("does not uncheck the friends and their  friends", function() {
+        trigger.setChecked();
+        expect(friend.checked).toBe(true);
+        expect(friendOfFriend.checked).toBe(true);
+        trigger.setUnchecked();
+        expect(trigger.checked).toBe(false);
+        expect(friend.checked).toBe(true);
+        return expect(friendOfFriend.checked).toBe(true);
       });
     });
   });
+
+  describe("class SuperCheckbox", function() {
+    var fanOfFriend, friend, friendOfFriend, otherFriend, trigger;
+    trigger = null;
+    friend = null;
+    otherFriend = null;
+    friendOfFriend = null;
+    fanOfFriend = null;
+    beforeEach(function() {
+      friendOfFriend = new cb.Checkbox("friendOfFriend", false);
+      friend = new cb.Checkbox("friend", false).setFriends([friendOfFriend]);
+      fanOfFriend = new cb.Checkbox("fanOfFriend", false).setFriends([friend]);
+      otherFriend = new cb.Checkbox("otherFriend", false);
+      return trigger = new cb.SuperCheckbox("trigger", false).setFriends([friend, otherFriend]);
+    });
+    describe("method setChecked", function() {
+      return it("checkes its friends and their friends as well (works like the unchecked method of the subclass)", function() {
+        trigger.setChecked();
+        expect(trigger.checked).toBe(true);
+        expect(friend.checked).toBe(true);
+        expect(friendOfFriend.checked).toBe(true);
+        return expect(fanOfFriend.checked).toBe(false);
+      });
+    });
+    describe("method setUnchecked", function() {
+      return it("uncheckes all friends and their friends and their fans", function() {
+        trigger.setChecked();
+        fanOfFriend.setChecked();
+        expect(fanOfFriend.checked).toBe(true);
+        trigger.setUnchecked();
+        expect(trigger.checked).toBe(false);
+        expect(friend.checked).toBe(false);
+        expect(friendOfFriend.checked).toBe(false);
+        return expect(fanOfFriend.checked).toBe(false);
+      });
+    });
+    return describe("method setCheckedIfAllFriendsAreChecked", function() {
+      return it("checks if all friends are checked", function() {
+        expect(friend.checked).toBe(false);
+        expect(otherFriend.checked).toBe(false);
+        expect(trigger.checked).toBe(false);
+        friend.setChecked();
+        trigger.setCheckedIfAllFriendsAreChecked();
+        expect(friend.checked).toBe(true);
+        expect(otherFriend.checked).toBe(false);
+        expect(trigger.checked).toBe(false);
+        otherFriend.setChecked();
+        trigger.setCheckedIfAllFriendsAreChecked();
+        expect(friend.checked).toBe(true);
+        expect(otherFriend.checked).toBe(true);
+        return expect(trigger.checked).toBe(true);
+      });
+    });
+  });
+
+  /*		
+  	describe "can toggle collegue", ->		
+  		beforeEach ->			
+  			friend.enemy = otherFriend
+  			otherFriend.enemy = friend
+  		it "toggle college when checked", ->
+  			friend.setChecked(false)
+  			expect(otherFriend.checked).toBe true
+  			friend.setChecked(true)
+  			expect(otherFriend.checked).toBe false
+  */
 
 }).call(this);

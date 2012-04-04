@@ -8,16 +8,16 @@ describe "CheckboxGroup", ->
 		peperoni = new cb.Checkbox("Peperoni", false).setFriends([artischokken])
 		knoblauch = new cb.Checkbox("Knoblauch", false).setFriends([peperoni])
 		
-		ingredients = new cb.CheckboxGroup([peperoni, knoblauch])
+		ingredients = new cb.CheckboxGroup([artischokken, peperoni, knoblauch])
 
 	it "can visit the elements", ->
 		i = 0
 		func = () -> i++
 		ingredients.visit(func)
-		expect(i).toBe 2
+		expect(i).toBe 3
 	it "can find any element by name", ->
-		found = ingredients.find "Peperoni"
-		expect(found.name).toBe "Peperoni"
+		expect(ingredients.find("Peperoni").name).toBe "Peperoni"
+	
 	describe "update", ->
 		it "can updates its direct friends", ->
 			ingredients.update("Knoblauch", true)
@@ -26,71 +26,126 @@ describe "CheckboxGroup", ->
 			ingredients.update("Knoblauch", true)
 			expect(artischokken.checked).toBe true
 		
-describe "Checkbox", ->
-	box = null
+describe "class Checkbox", ->
+	trigger = null
+	fanOfTrigger = null
+	fanOfFanOfTrigger = null
 	friend = null
 	otherFriend = null
 	friendOfFriend = null
+	fanOfFriend = null
 
 	beforeEach ->			
-		friendOfFriend  = new cb.Checkbox("friendOfFriend", false)
+		friendOfFriend = new cb.Checkbox("friendOfFriend", false)
 		friend = new cb.Checkbox("friend", false).setFriends([friendOfFriend])
+		fanOfFriend = new cb.Checkbox("fanOfFriend", false).setFriends([friend])
+
 		otherFriend = new cb.Checkbox("otherFriend", false)
-		box = new cb.Checkbox("box", false).setFriends([friend, otherFriend])
+		trigger = new cb.Checkbox("trigger", false).setFriends([friend, otherFriend])
+		fanOfTrigger = new cb.Checkbox("fanOfTrigger", false).setFriends([trigger])
+		fanOfFanOfTrigger = new cb.Checkbox("fanOfFanOfTrigger", false).setFriends([fanOfTrigger])
 	
 	describe "can be visited", ->
 		it "returns the itself to the caller", ->
 			name = "?"
 			func = -> name = this.name
-			box.visit(func)
-			expect(name).toBe "box"
+			trigger.visit(func)
+			expect(name).toBe "trigger"
 		
 		
 	it "can have friends", ->
-		expect(box.friends[0].name).toBe("friend")
+		expect(trigger.friends[0].name).toBe("friend")
 		
 	it "can have fans", ->
-		expect(friend.fans[0].name).toBe("box")
+		expect(trigger.fans[0].name).toBe("fanOfTrigger")
 		
-	describe "setChecked", ->
-		describe "when checking the checkbox", ->
-		
-			it "checkes its friends and their friends as well", ->
-				box.setChecked(true)
-				expect(friend.checked).toBe true
-				expect(friendOfFriend.checked).toBe true
+	describe "method setChecked", ->
+		it "checkes its friends and their friends as well", ->
+			trigger.setChecked()
+			expect(friend.checked).toBe true
+			expect(friendOfFriend.checked).toBe true
+		it "but not the fans", ->
+			trigger.setChecked()
+			expect(fanOfFriend.checked).toBe false
+			expect(fanOfTrigger.checked).toBe false
+			expect(fanOfFanOfTrigger.checked).toBe false
 				
-		describe "when unchecking the checkbox", ->
-			it "it uncheckes not its checked friends and their checked friends", ->
-				box.setChecked(true)
-				expect(friend.checked).toBe true
-				expect(friendOfFriend.checked).toBe true
-				box.setChecked(false)
-				expect(box.checked).toBe false
-				expect(friend.checked).toBe true
-				expect(friendOfFriend.checked).toBe true
-			it "it uncheckes the checkboxes which have this as friend", ->
-				box.setChecked(true)
-				expect(friend.checked).toBe true
-				expect(friendOfFriend.checked).toBe true
-				
-				friendOfFriend.setChecked(false)
-				expect(box.checked).toBe false
-				expect(friend.checked).toBe false
-				expect(friendOfFriend.checked).toBe false
-		
-	describe "checkIfAllMyFriendsAreChecked", ->
-		describe "property isCheckIfAllMyFriendsAreChecked is true", ->
-			beforeEach ->			
-				box.isCheckIfAllMyFriendsAreChecked=true
-			it "checkes if all its friends are checked", -> 
-				expect(box.checked).toBe false
-				friend.setChecked(true)
-				otherFriend.setChecked(true)
-				expect(box.checked).toBe false
-				box.checkIfAllMyFriendsAreChecked()
-				expect(box.checked).toBe true
+	describe "method setUnchecked", ->
+		it "uncheckes the fans and their fans", ->
+			fanOfFanOfTrigger.setChecked()
+			expect(friend.checked).toBe true
+			expect(friendOfFriend.checked).toBe true
+			expect(fanOfTrigger.checked).toBe true
+			fanOfFriend.setChecked()
+			expect(fanOfFriend.checked).toBe true
+			
+			trigger.setUnchecked()
+			expect(trigger.checked).toBe false
+			expect(fanOfTrigger.checked).toBe false
+			expect(fanOfFanOfTrigger.checked).toBe false
+			expect(fanOfFriend.checked).toBe true
 
+		it "does not uncheck the friends and their  friends", ->
+			trigger.setChecked()
+			expect(friend.checked).toBe true
+			expect(friendOfFriend.checked).toBe true
+			trigger.setUnchecked()
+			expect(trigger.checked).toBe false
+			expect(friend.checked).toBe true
+			expect(friendOfFriend.checked).toBe true
+
+describe "class SuperCheckbox", ->
+
+	trigger = null
+	friend = null
+	otherFriend = null
+	friendOfFriend = null
+	fanOfFriend = null
+	
+	beforeEach ->			
+		friendOfFriend = new cb.Checkbox("friendOfFriend", false)
+		friend = new cb.Checkbox("friend", false).setFriends([friendOfFriend])
+		fanOfFriend = new cb.Checkbox("fanOfFriend", false).setFriends([friend])
+		otherFriend = new cb.Checkbox("otherFriend", false)
+		trigger = new cb.SuperCheckbox("trigger", false).setFriends([friend, otherFriend])
+
+	describe "method setChecked", ->
+		it "checkes its friends and their friends as well (works like the unchecked method of the subclass)", ->
+			trigger.setChecked()
+			expect(trigger.checked).toBe true
+			expect(friend.checked).toBe true
+			expect(friendOfFriend.checked).toBe true
+			expect(fanOfFriend.checked).toBe false
+			
+	
+	describe "method setUnchecked", ->
+		it "uncheckes all friends and their friends and their fans", ->
+			trigger.setChecked()
+			fanOfFriend.setChecked()
+			expect(fanOfFriend.checked).toBe true
+			trigger.setUnchecked()
+			expect(trigger.checked).toBe false
+			expect(friend.checked).toBe false
+			expect(friendOfFriend.checked).toBe false
+			expect(fanOfFriend.checked).toBe false
+			
+	describe "method setCheckedIfAllFriendsAreChecked", ->
+		it "checks if all friends are checked", ->
+			expect(friend.checked).toBe false
+			expect(otherFriend.checked).toBe false
+			expect(trigger.checked).toBe false
+			friend.setChecked()
+			trigger.setCheckedIfAllFriendsAreChecked()
+			expect(friend.checked).toBe true
+			expect(otherFriend.checked).toBe false
+			expect(trigger.checked).toBe false
+			otherFriend.setChecked()
+			trigger.setCheckedIfAllFriendsAreChecked()
+			expect(friend.checked).toBe true
+			expect(otherFriend.checked).toBe true
+			expect(trigger.checked).toBe true
+		
+###		
 	describe "can toggle collegue", ->		
 		beforeEach ->			
 			friend.enemy = otherFriend
@@ -102,7 +157,7 @@ describe "Checkbox", ->
 			expect(otherFriend.checked).toBe false
 
 			
-	
+###	
 			
 		
 			

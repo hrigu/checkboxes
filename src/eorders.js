@@ -25,7 +25,7 @@
     teleclub_Superpaket_SD_HD = new cb.SuperCheckbox("Teleclub_Superpaket_SD_HD", false).setFriends([teleclub_Cinema_HD, teleclub_Sport_HD, teleclub_Family_HD, teleclub_Enterainment_HD]);
     teleclub_Superpaket_Other = new cb.SuperCheckbox("teleclub_Superpaket_Other", false).setFriends([teleclub_Sport_HD, teleclub_Family_HD, teleclub_Enterainment_HD]);
     german_channels = new cb.Checkbox("German_channels", false);
-    cbx = [teleclub_Cinema_HD, teleclub_Sport_HD, teleclub_Basic, teleclub_Sport, teleclub_Family, teleclub_Family_HD, teleclub_Movie, teleclub_Enterainment_HD, teleclub_Superpaket, teleclub_Superpaket_SD_HD, teleclub_Superpaket_Other, german_channels];
+    cbx = [teleclub_Basic, teleclub_Cinema_HD, teleclub_Sport, teleclub_Sport_HD, teleclub_Family, teleclub_Family_HD, teleclub_Movie, teleclub_Enterainment_HD, teleclub_Superpaket, teleclub_Superpaket_SD_HD, german_channels];
     return new cb.CheckboxGroup(cbx);
   };
 
