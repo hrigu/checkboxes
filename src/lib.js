@@ -28,10 +28,11 @@
       var checkbox;
       checkbox = null;
       if (cb_desc.type === void 0 || cb_desc.type === "normal") {
-        checkbox = new cb.Checkbox(cb_desc.id, cb_desc.checked);
-      }
-      if (cb_desc.type === "super") {
-        checkbox = new cb.SuperCheckbox(cb_desc.id, cb_desc.checked);
+        checkbox = new cb.Checkbox(cb_desc.name, cb_desc.checked);
+      } else if (cb_desc.type === "super") {
+        checkbox = new cb.SuperCheckbox(cb_desc.name, cb_desc.checked);
+      } else {
+        throw "could not interpret 'type' property '" + cb_desc.type + "'";
       }
       return checkbox;
     };

@@ -13,7 +13,7 @@
       var checkboxGroup, checkboxes, desc, eins;
       desc = [
         {
-          id: "eins",
+          name: "eins",
           checked: false
         }
       ];
@@ -29,11 +29,11 @@
       var checkboxGroup, checkboxes, desc, eins, fan, friend, zwei;
       desc = [
         {
-          id: "eins",
+          name: "eins",
           checked: false,
           friends: ["zwei"]
         }, {
-          id: "zwei",
+          name: "zwei",
           checked: true
         }
       ];
@@ -58,7 +58,7 @@
         var checkboxGroup, checkboxes, desc;
         desc = [
           {
-            id: "eins",
+            name: "eins",
             checked: false
           }
         ];
@@ -70,7 +70,7 @@
         var checkboxGroup, checkboxes, desc;
         desc = [
           {
-            id: "eins",
+            name: "eins",
             checked: false,
             type: "normal"
           }
@@ -79,11 +79,11 @@
         checkboxes = checkboxGroup.allCheckboxes;
         return expect(checkboxes[0] instanceof cb.Checkbox).toBe(true);
       });
-      return it("the type 'super'  is 'cb.SuperCheckbox'", function() {
+      it("the type 'super'  is 'cb.SuperCheckbox'", function() {
         var checkboxGroup, checkboxes, desc;
         desc = [
           {
-            id: "eins",
+            name: "eins",
             checked: false,
             type: "super"
           }
@@ -91,6 +91,21 @@
         checkboxGroup = parser.parse(desc);
         checkboxes = checkboxGroup.allCheckboxes;
         return expect(checkboxes[0] instanceof cb.SuperCheckbox).toBe(true);
+      });
+      return it("throws an exception when type is unknown", function() {
+        var desc;
+        desc = [
+          {
+            name: "eins",
+            checked: false,
+            type: "unknown"
+          }
+        ];
+        try {
+          return parser.parse(desc);
+        } catch (e) {
+          return expect(e).toBe("could not interpret 'type' property 'unknown'");
+        }
       });
     });
   });
