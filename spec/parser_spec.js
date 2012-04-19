@@ -10,14 +10,15 @@
       return expect(parser instanceof cb.Parser).toBe(true);
     });
     it("should build a checkbox from a json object", function() {
-      var checkboxes, desc, eins;
+      var checkboxGroup, checkboxes, desc, eins;
       desc = [
         {
           id: "eins",
           checked: false
         }
       ];
-      checkboxes = parser.parse(desc);
+      checkboxGroup = parser.parse(desc);
+      checkboxes = checkboxGroup.allCheckboxes;
       expect(checkboxes.length).toBe(1);
       eins = checkboxes[0];
       expect(eins instanceof cb.Checkbox).toBe(true);
@@ -25,7 +26,7 @@
       return expect(eins.checked).toBe(false);
     });
     return it("should build checkboxes with friends", function() {
-      var checkboxes, desc, eins, fan, friend, zwei;
+      var checkboxGroup, checkboxes, desc, eins, fan, friend, zwei;
       desc = [
         {
           id: "eins",
@@ -36,7 +37,8 @@
           checked: true
         }
       ];
-      checkboxes = parser.parse(desc);
+      checkboxGroup = parser.parse(desc);
+      checkboxes = checkboxGroup.allCheckboxes;
       expect(checkboxes.length).toBe(2);
       eins = checkboxes[0];
       expect(eins.friends.length).toBe(1);

@@ -2,12 +2,12 @@
   var append, checked_string, createModel, createView, updateUI;
 
   jQuery(function() {
-    var ingredients;
-    ingredients = createModel();
-    createView(ingredients);
+    var model;
+    model = createModel();
+    createView(model);
     return $(".mycheckbox").click(function() {
-      ingredients.update(this.id, this.checked);
-      return updateUI(ingredients);
+      model.update(this.id, this.checked);
+      return updateUI(model);
     });
   });
 
@@ -29,13 +29,13 @@
     return new cb.CheckboxGroup(cbx);
   };
 
-  createView = function(ingredients) {
+  createView = function(model) {
     var container, func;
     container = $('#chooser');
     func = function() {
       return append(container, this);
     };
-    return ingredients.visit(func);
+    return model.visit(func);
   };
 
   append = function(container, checkbox) {
@@ -52,8 +52,8 @@
     }
   };
 
-  updateUI = function(ingredients) {
-    return ingredients.visit(function() {
+  updateUI = function(model) {
+    return model.visit(function() {
       var uiCheckbox;
       uiCheckbox = $("#" + this.name)[0];
       uiCheckbox.checked = this.checked;

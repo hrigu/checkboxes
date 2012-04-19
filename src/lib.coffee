@@ -2,32 +2,29 @@ this.cb = {}
 
 class cb.Parser
 	
-	constructor: () ->
-		@checkboxes = []
-					
-	
 	parse: (checkboxes_desc) ->
 		console.log checkboxes_desc
 		
+		checkboxes = []
 		for cb_desc in checkboxes_desc
 			friends = []
 			friends = cb_desc.friends if cb_desc.friends != undefined
 			checkbox = new cb.Checkbox(cb_desc.id, cb_desc.checked)
 			checkbox.friends = friends
-			this.checkboxes.push checkbox
-		this._resolveFriends()
-		this.checkboxes
+			checkboxes.push(checkbox)
+		this._resolveFriends(checkboxes)
+		new cb.CheckboxGroup(checkboxes)
 		
-	_resolveFriends: ->
-		for checkbox in @checkboxes
+	_resolveFriends: (checkboxes) ->
+		for checkbox in checkboxes
 			friends = []
 			for friendId in checkbox.friends
-				friends.push this._find(friendId)
+				friends.push this._find(checkboxes, friendId)
 			checkbox.setFriends(friends)	
 				
-	_find: (name) ->
+	_find: (checkboxes, name) ->
 		found = null
-		for checkbox in @checkboxes
+		for checkbox in checkboxes
 			found = checkbox if checkbox.name == name
 		found
 

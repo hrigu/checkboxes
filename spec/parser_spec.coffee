@@ -10,7 +10,8 @@ describe "parser", ->
 		desc = [
 			id: "eins", checked: false			
 		]
-		checkboxes = parser.parse(desc)
+		checkboxGroup = parser.parse(desc)
+		checkboxes = checkboxGroup.allCheckboxes
 		expect(checkboxes.length).toBe 1
 		eins = checkboxes[0]
 		expect(eins instanceof cb.Checkbox).toBe true
@@ -25,7 +26,9 @@ describe "parser", ->
 			id: "zwei", checked: true			
 		]
 		
-		checkboxes = parser.parse(desc)
+		checkboxGroup = parser.parse(desc)
+		checkboxes = checkboxGroup.allCheckboxes
+
 		expect(checkboxes.length).toBe 2
 		eins = checkboxes[0]
 		expect(eins.friends.length).toBe 1

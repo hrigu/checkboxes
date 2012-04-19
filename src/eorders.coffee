@@ -1,9 +1,9 @@
 jQuery ->
-	ingredients = createModel()
-	createView(ingredients)
+	model = createModel()
+	createView(model)
 	$(".mycheckbox").click -> 		
-		ingredients.update(this.id, this.checked)
-		updateUI(ingredients)
+		model.update(this.id, this.checked)
+		updateUI(model)
 	
 createModel = () ->
 
@@ -38,12 +38,12 @@ createModel = () ->
 	]
 	new cb.CheckboxGroup(cbx)
 
-createView = (ingredients) ->
+createView = (model) ->
 	#create the checkboxes
 	container = $('#chooser')
 	func = ->
 		append(container, this)
-	ingredients.visit(func)
+	model.visit(func)
 
 append = (container, checkbox) ->
 	html = "<li><input type='checkbox' class='mycheckbox' id='#{checkbox.name}' name=Zutat value='#{checkbox.name}' #{checked_string(checkbox.checked)}>#{checkbox.name}</></li>"
@@ -52,8 +52,8 @@ append = (container, checkbox) ->
 checked_string = (checked) ->
 	if checked then "checked='checked'" else ""
 	
-updateUI = (ingredients) ->
-	ingredients.visit ->
+updateUI = (model) ->
+	model.visit ->
 		uiCheckbox = $("##{this.name}")[0]
 		uiCheckbox.checked = this.checked		
 		uiCheckbox.disabled = this.disabled	
