@@ -7,13 +7,21 @@ class cb.Parser
 		
 		checkboxes = []
 		for cb_desc in checkboxes_desc
+			checkbox = this._buildCheckbox(cb_desc)
 			friends = []
 			friends = cb_desc.friends if cb_desc.friends != undefined
-			checkbox = new cb.Checkbox(cb_desc.id, cb_desc.checked)
 			checkbox.friends = friends
 			checkboxes.push(checkbox)
 		this._resolveFriends(checkboxes)
 		new cb.CheckboxGroup(checkboxes)
+
+	_buildCheckbox: (cb_desc) ->
+		checkbox = null
+		if (cb_desc.type == undefined || cb_desc.type == "normal")
+			checkbox = new cb.Checkbox(cb_desc.id, cb_desc.checked)
+		if ( cb_desc.type == "super")
+			checkbox = new cb.SuperCheckbox(cb_desc.id, cb_desc.checked)
+		checkbox
 		
 	_resolveFriends: (checkboxes) ->
 		for checkbox in checkboxes
@@ -136,7 +144,6 @@ class cb.Checkbox
 				
 		
 class cb.SuperCheckbox extends cb.Checkbox	
-	
 			
 	setUnchecked: ->
 		this._uncheckFriends()

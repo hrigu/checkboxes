@@ -43,10 +43,24 @@ describe "parser", ->
 		fan = friend.fans[0]
 		expect(fan.name).toBe "eins"
 		expect(fan).toBe eins
+
+	describe "should interpret the type property", ->
+		it "the default type is 'cb.Checkboxes'", ->
+			desc = [id: "eins", checked: false]
+			checkboxGroup = parser.parse(desc)
+			checkboxes = checkboxGroup.allCheckboxes
+			expect(checkboxes[0] instanceof cb.Checkbox).toBe true
+			
+		it "the type 'normal'  is 'cb.Checkboxes'", ->
+			desc = [id: "eins", checked: false, type: "normal"]
+			checkboxGroup = parser.parse(desc)
+			checkboxes = checkboxGroup.allCheckboxes
+			expect(checkboxes[0] instanceof cb.Checkbox).toBe true
 		
-		
-		expect() 
-		
-		
+		it "the type 'super'  is 'cb.SuperCheckbox'", ->
+			desc = [id: "eins", checked: false, type: "super"]
+			checkboxGroup = parser.parse(desc)
+			checkboxes = checkboxGroup.allCheckboxes
+			expect(checkboxes[0] instanceof cb.SuperCheckbox).toBe true
 		
 		 

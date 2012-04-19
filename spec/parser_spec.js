@@ -25,7 +25,7 @@
       expect(eins.name).toBe("eins");
       return expect(eins.checked).toBe(false);
     });
-    return it("should build checkboxes with friends", function() {
+    it("should build checkboxes with friends", function() {
       var checkboxGroup, checkboxes, desc, eins, fan, friend, zwei;
       desc = [
         {
@@ -51,8 +51,47 @@
       expect(friend.fans.length).toBe(1);
       fan = friend.fans[0];
       expect(fan.name).toBe("eins");
-      expect(fan).toBe(eins);
-      return expect();
+      return expect(fan).toBe(eins);
+    });
+    return describe("should interpret the type property", function() {
+      it("the default type is 'cb.Checkboxes'", function() {
+        var checkboxGroup, checkboxes, desc;
+        desc = [
+          {
+            id: "eins",
+            checked: false
+          }
+        ];
+        checkboxGroup = parser.parse(desc);
+        checkboxes = checkboxGroup.allCheckboxes;
+        return expect(checkboxes[0] instanceof cb.Checkbox).toBe(true);
+      });
+      it("the type 'normal'  is 'cb.Checkboxes'", function() {
+        var checkboxGroup, checkboxes, desc;
+        desc = [
+          {
+            id: "eins",
+            checked: false,
+            type: "normal"
+          }
+        ];
+        checkboxGroup = parser.parse(desc);
+        checkboxes = checkboxGroup.allCheckboxes;
+        return expect(checkboxes[0] instanceof cb.Checkbox).toBe(true);
+      });
+      return it("the type 'super'  is 'cb.SuperCheckbox'", function() {
+        var checkboxGroup, checkboxes, desc;
+        desc = [
+          {
+            id: "eins",
+            checked: false,
+            type: "super"
+          }
+        ];
+        checkboxGroup = parser.parse(desc);
+        checkboxes = checkboxGroup.allCheckboxes;
+        return expect(checkboxes[0] instanceof cb.SuperCheckbox).toBe(true);
+      });
     });
   });
 

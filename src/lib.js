@@ -14,14 +14,26 @@
       checkboxes = [];
       for (_i = 0, _len = checkboxes_desc.length; _i < _len; _i++) {
         cb_desc = checkboxes_desc[_i];
+        checkbox = this._buildCheckbox(cb_desc);
         friends = [];
         if (cb_desc.friends !== void 0) friends = cb_desc.friends;
-        checkbox = new cb.Checkbox(cb_desc.id, cb_desc.checked);
         checkbox.friends = friends;
         checkboxes.push(checkbox);
       }
       this._resolveFriends(checkboxes);
       return new cb.CheckboxGroup(checkboxes);
+    };
+
+    Parser.prototype._buildCheckbox = function(cb_desc) {
+      var checkbox;
+      checkbox = null;
+      if (cb_desc.type === void 0 || cb_desc.type === "normal") {
+        checkbox = new cb.Checkbox(cb_desc.id, cb_desc.checked);
+      }
+      if (cb_desc.type === "super") {
+        checkbox = new cb.SuperCheckbox(cb_desc.id, cb_desc.checked);
+      }
+      return checkbox;
     };
 
     Parser.prototype._resolveFriends = function(checkboxes) {
