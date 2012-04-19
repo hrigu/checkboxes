@@ -4,11 +4,18 @@ describe "class CheckboxGroup", ->
 	peperoni = null
 	knoblauch = null
 	beforeEach ->
-		artischokken = new cb.Checkbox("Artischokken", false)
-		peperoni = new cb.Checkbox("Peperoni", false).setFriends([artischokken])
-		knoblauch = new cb.Checkbox("Knoblauch", false).setFriends([peperoni])
-		
-		checkboxGroup = new cb.CheckboxGroup([artischokken, peperoni, knoblauch])
+		desc = [
+			name: "Artischokken", checked: false
+		,
+			name: "Peperoni", checked: false, friends: ["Artischokken"]
+		,
+			name: "Knoblauch", checked: false, friends: ["Peperoni"]			
+		]
+		parser = new cb.Parser()
+		checkboxGroup = parser.parse(desc)
+		artischokken = checkboxGroup.find("Artischokken")
+		peperoni = checkboxGroup.find("Peperoni")
+		knoblauch = checkboxGroup.find("Knoblauch")
 
 	it "should visit all checkboxes", ->
 		i = 0
@@ -67,15 +74,33 @@ describe "class Checkbox", ->
 	friendOfFriend = null
 	fanOfFriend = null
 
-	beforeEach ->			
-		friendOfFriend = new cb.Checkbox("friendOfFriend", false)
-		friend = new cb.Checkbox("friend", false).setFriends([friendOfFriend])
-		fanOfFriend = new cb.Checkbox("fanOfFriend", false).setFriends([friend])
+	beforeEach ->
+		desc = [
+			name: "friendOfFriend", checked: false
+		,
+			name: "friend", checked: false, friends: ["friendOfFriend"]
+		,
+			name: "fanOfFriend", checked: false, friends: ["friend"]			
+		,
+			name: "otherFriend", checked: false
+		,
+			name: "trigger", checked: false, friends: ["friend", "otherFriend"]
+		,
+			name: "fanOfTrigger", checked: false, friends: ["trigger"]			
+		,
+			name: "fanOfFanOfTrigger", checked: false, friends: ["fanOfTrigger"]			
+		]
+		parser = new cb.Parser()
+		checkboxGroup = parser.parse(desc)
+		
+		friendOfFriend = checkboxGroup.find("friendOfFriend")
+		friend = checkboxGroup.find("friend")
+		fanOfFriend = checkboxGroup.find("fanOfFriend")
 
-		otherFriend = new cb.Checkbox("otherFriend", false)
-		trigger = new cb.Checkbox("trigger", false).setFriends([friend, otherFriend])
-		fanOfTrigger = new cb.Checkbox("fanOfTrigger", false).setFriends([trigger])
-		fanOfFanOfTrigger = new cb.Checkbox("fanOfFanOfTrigger", false).setFriends([fanOfTrigger])
+		otherFriend = checkboxGroup.find("otherFriend")
+		trigger = checkboxGroup.find("trigger")
+		fanOfTrigger = checkboxGroup.find("fanOfTrigger")
+		fanOfFanOfTrigger = checkboxGroup.find("fanOfFanOfTrigger")
 	
 	describe "the method 'visit'", ->
 		it "should return itself to the caller", ->
@@ -135,11 +160,25 @@ describe "class SuperCheckbox", ->
 	fanOfFriend = null
 	
 	beforeEach ->			
-		friendOfFriend = new cb.Checkbox("friendOfFriend", false)
-		friend = new cb.Checkbox("friend", false).setFriends([friendOfFriend])
-		fanOfFriend = new cb.Checkbox("fanOfFriend", false).setFriends([friend])
-		otherFriend = new cb.Checkbox("otherFriend", false)
-		trigger = new cb.SuperCheckbox("trigger", false).setFriends([friend, otherFriend])
+		desc = [
+			name: "friendOfFriend", checked: false
+		,
+			name: "friend", checked: false, friends: ["friendOfFriend"]
+		,
+			name: "fanOfFriend", checked: false, friends: ["friend"]			
+		,
+			name: "otherFriend", checked: false
+		,
+			name: "trigger", checked: false, type: "super", friends: ["friend", "otherFriend"]
+		]
+		parser = new cb.Parser()
+		checkboxGroup = parser.parse(desc)
+		
+		friendOfFriend = checkboxGroup.find("friendOfFriend")
+		friend = checkboxGroup.find("friend")
+		fanOfFriend = checkboxGroup.find("fanOfFriend")
+		otherFriend = checkboxGroup.find("otherFriend")
+		trigger = checkboxGroup.find("trigger")
 
 	describe "the method 'setChecked'", ->
 		it "should check its friends and their friends as well (works like the unchecked method of the subclass)", ->
