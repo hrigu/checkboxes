@@ -60,6 +60,7 @@
         checkbox = checkboxes[_i];
         if (checkbox.name === name) found = checkbox;
       }
+      if (!found) throw "could not find " + name;
       return found;
     };
 

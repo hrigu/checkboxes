@@ -1,0 +1,72 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/> 
+		<title>Checkboxen definieren</title>
+		<script type="text/javascript" src="lib/jquery-1.7.js"></script>
+		<script type="text/javascript" src="src/lib.js"></script>   
+		<script type="text/javascript" src="src/eorders_2.js"></script>
+		<script type="text/javascript">
+		var modelDesc = [
+		      {
+			name: "Teleclub_Basic",
+			checked: false
+		      }, {
+			name: "Teleclub_Cinema_HD",
+			checked: false,
+			friends: ["Teleclub_Basic"]
+		      }, {
+			name: "Teleclub_Sport",
+			checked: false,
+			friends: ["Teleclub_Basic"]
+		      }, {
+			name: "Teleclub_Sport_HD",
+			checked: false,
+			friends: ["Teleclub_Sport"]
+		      }, {
+			name: "Teleclub_Family",
+			checked: false,
+			friends: ["Teleclub_Basic"]
+		      }, {
+			name: "Teleclub_Family_HD",
+			checked: false,
+			friends: ["Teleclub_Family"]
+		      }, {
+			name: "Teleclub_Movie",
+			checked: false,
+			friends: ["Teleclub_Basic"]
+		      }, {
+			name: "Teleclub_Entertainment_HD",
+			checked: false,
+			friends: ["Teleclub_Movie"]
+		      }, {
+			name: "Teleclub_Superpaket",
+			checked: false,
+			type: "super",
+			friends: ["Teleclub_Basic", "Teleclub_Sport", "Teleclub_Family", "Teleclub_Movie"]
+		      }, {
+			name: "Teleclub_Supepaket_HD",
+			checked: false,
+			type: "super",
+			friends: ["Teleclub_Cinema_HD", "Teleclub_Sport_HD", "Teleclub_Family_HD", "Teleclub_Entertainment_HD"]
+		      }, {
+			name: "German_channels",
+			checked: false
+		      }
+		    ];
+	      </script>
+		
+	</head>
+	<body>
+	
+	<h1>Senderpakete</h1>
+	
+	<form action="input_checkbox.htm">
+	  <p>Kreuzen Sie die gewünschten Senderpakete an:</p>
+	  <p>
+		<ul id="chooser">
+		</ul>
+	  </p>
+	</form>
+
+</body>
+</html>

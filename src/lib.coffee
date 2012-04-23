@@ -37,6 +37,7 @@ class cb.Parser
 		found = null
 		for checkbox in checkboxes
 			found = checkbox if checkbox.name == name
+		throw "could not find #{name}" unless found
 		found
 
 

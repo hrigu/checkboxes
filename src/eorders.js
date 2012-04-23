@@ -12,21 +12,56 @@
   });
 
   createModel = function() {
-    var cbx, german_channels, teleclub_Basic, teleclub_Cinema_HD, teleclub_Enterainment_HD, teleclub_Family, teleclub_Family_HD, teleclub_Movie, teleclub_Sport, teleclub_Sport_HD, teleclub_Superpaket, teleclub_Superpaket_Other, teleclub_Superpaket_SD_HD;
-    teleclub_Basic = new cb.Checkbox("Teleclub_Basic", false);
-    teleclub_Cinema_HD = new cb.Checkbox("Teleclub_Cinema_HD", false).setFriends([teleclub_Basic]);
-    teleclub_Sport = new cb.Checkbox("Teleclub_Sport", false).setFriends([teleclub_Basic]);
-    teleclub_Sport_HD = new cb.Checkbox("Teleclub_Sport_HD", false).setFriends([teleclub_Sport]);
-    teleclub_Family = new cb.Checkbox("Teleclub_Family", false).setFriends([teleclub_Basic]);
-    teleclub_Family_HD = new cb.Checkbox("Teleclub_Family_HD", false).setFriends([teleclub_Family]);
-    teleclub_Movie = new cb.Checkbox("Teleclub_Movie", false).setFriends([teleclub_Basic]);
-    teleclub_Enterainment_HD = new cb.Checkbox("Teleclub_Enterainment_HD", false).setFriends([teleclub_Movie]);
-    teleclub_Superpaket = new cb.SuperCheckbox("Teleclub_Superpaket", false).setFriends([teleclub_Basic, teleclub_Sport, teleclub_Family, teleclub_Movie]);
-    teleclub_Superpaket_SD_HD = new cb.SuperCheckbox("Teleclub_Superpaket_SD_HD", false).setFriends([teleclub_Cinema_HD, teleclub_Sport_HD, teleclub_Family_HD, teleclub_Enterainment_HD]);
-    teleclub_Superpaket_Other = new cb.SuperCheckbox("teleclub_Superpaket_Other", false).setFriends([teleclub_Sport_HD, teleclub_Family_HD, teleclub_Enterainment_HD]);
-    german_channels = new cb.Checkbox("German_channels", false);
-    cbx = [teleclub_Basic, teleclub_Cinema_HD, teleclub_Sport, teleclub_Sport_HD, teleclub_Family, teleclub_Family_HD, teleclub_Movie, teleclub_Enterainment_HD, teleclub_Superpaket, teleclub_Superpaket_SD_HD, german_channels];
-    return new cb.CheckboxGroup(cbx);
+    var desc, parser;
+    desc = [
+      {
+        name: "Teleclub_Basic",
+        checked: false
+      }, {
+        name: "Teleclub_Cinema_HD",
+        checked: false,
+        friends: ["Teleclub_Basic"]
+      }, {
+        name: "Teleclub_Sport",
+        checked: false,
+        friends: ["Teleclub_Basic"]
+      }, {
+        name: "Teleclub_Sport_HD",
+        checked: false,
+        friends: ["Teleclub_Sport"]
+      }, {
+        name: "Teleclub_Family",
+        checked: false,
+        friends: ["Teleclub_Basic"]
+      }, {
+        name: "Teleclub_Family_HD",
+        checked: false,
+        friends: ["Teleclub_Family"]
+      }, {
+        name: "Teleclub_Movie",
+        checked: false,
+        friends: ["Teleclub_Basic"]
+      }, {
+        name: "Teleclub_Entertainment_HD",
+        checked: false,
+        friends: ["Teleclub_Movie"]
+      }, {
+        name: "Teleclub_Superpaket",
+        checked: false,
+        type: "super",
+        friends: ["Teleclub_Basic", "Teleclub_Sport", "Teleclub_Family", "Teleclub_Movie"]
+      }, {
+        name: "Teleclub_Supepaket_HD",
+        checked: false,
+        type: "super",
+        friends: ["Teleclub_Cinema_HD", "Teleclub_Sport_HD", "Teleclub_Family_HD", "Teleclub_Entertainment_HD"]
+      }, {
+        name: "German_channels",
+        checked: false
+      }
+    ];
+    parser = new cb.Parser();
+    return parser.parse(desc);
   };
 
   createView = function(model) {

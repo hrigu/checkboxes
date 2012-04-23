@@ -214,7 +214,4 @@ describe "class SuperCheckbox", ->
 			trigger.setCheckedIfAllFriendsAreChecked()
 			expect(friend.checked).toBe true
 			expect(otherFriend.checked).toBe true
-			expect(trigger.checked).toBe true
-			
-		
-			
+			expect(trigger.checked).toBe true			
